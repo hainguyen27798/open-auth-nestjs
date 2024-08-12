@@ -1,0 +1,37 @@
+name: open-auth
+networks:
+    open_auth_network:
+        driver: bridge
+services:
+    mongo:
+        build:
+            dockerfile: .docker/mongo/Dockerfile
+        container_name: open-auth-db
+        restart: unless-stopped
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: $AUTH_MONGO_USERNAME
+            MONGO_INITDB_ROOT_PASSWORD: $AUTH_MONGO_PASSWORD
+        ports:
+            - '${AUTH_MONGO_PORT}:27017'
+        command: --replSet rs0 --keyFile /etc/mongo-keyfile --bind_ip_all --port 27017
+        healthcheck:
+            test: echo "
+                try { rs.status() }
+                catch (err) {
+                    rs.initiate({
+                        _id:'rs0',
+                        members:[
+                            { _id:0, host:'127.0.0.1:27017' }
+                        ]
+                    })
+                }" | mongosh --port 27017 -u $AUTH_MONGO_USERNAME -p $AUTH_MONGO_PASSWORD --authenticationDatabase admin
+            interval: 5s
+            timeout: 15s
+            start_period: 15s
+            retries: 10
+        networks:
+            - open_auth_network
+        volumes:
+            - open_auth_db:/data/db
+volumes:
+    open_auth_db:
