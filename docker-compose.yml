@@ -33,5 +33,23 @@ services:
             - open_auth_network
         volumes:
             - open_auth_db:/data/db
+    backend:
+        container_name: open-auth-backend
+        build:
+            context: workspaces/backend
+            dockerfile: .docker/Dockerfile
+        depends_on:
+            mongo:
+                condition: service_healthy
+        networks:
+            - open_auth_network
+        volumes:
+            - open_auth_backend:/app
+        ports:
+            - '${AUTH_API_PORT}:${AUTH_API_PORT}'
+        expose:
+            - '${AUTH_API_PORT}'
+        command: 'yarn start:prod'
 volumes:
     open_auth_db:
+    open_auth_backend:
