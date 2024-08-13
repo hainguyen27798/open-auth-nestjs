@@ -38,6 +38,19 @@ services:
         build:
             context: workspaces/backend
             dockerfile: .docker/Dockerfile
+        environment:
+            AUTH_MONGO_BD_NAME: $AUTH_MONGO_BD_NAME
+            AUTH_MONGO_USERNAME: $AUTH_MONGO_USERNAME
+            AUTH_MONGO_PASSWORD: $AUTH_MONGO_PASSWORD
+            AUTH_MONGO_HOST: $AUTH_MONGO_HOST
+            AUTH_MONGO_PORT: $AUTH_MONGO_PORT
+            AUTH_API_PORT: $AUTH_API_PORT
+            SUPERUSER_EMAIL: $SUPERUSER_EMAIL
+            SUPERUSER_PASS: $SUPERUSER_PASS
+            AUTH0_ISSUER_BASE_URL: $AUTH0_ISSUER_BASE_URL
+            AUTH0_AUDIENCE: $AUTH0_AUDIENCE
+            AUTH_JWT_PRIVATE_KEY: $AUTH_JWT_PRIVATE_KEY
+            AUTH_JWT_PUBLIC_KEY: $AUTH_JWT_PUBLIC_KEY
         depends_on:
             mongo:
                 condition: service_healthy
