@@ -18,6 +18,7 @@ services:
             retries: 10
         volumes:
             - open_auth_db:/var/lib/mysql
+            - ./.docker/my.cnf:/etc/mysql/my.cnf
             - ./src/data:/data
         networks:
             - open_auth_network

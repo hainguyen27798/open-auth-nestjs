@@ -1,3 +1,5 @@
+import { parseInt } from 'lodash';
+
 import { ENV_MODE } from '@/constants';
 import { TConfig } from '@/types';
 
@@ -11,10 +13,10 @@ export class Configuration {
                 env: envMode,
                 port: parseInt(process.env['AUTH_API_PORT'], 10),
                 mongo: {
-                    host: process.env['AUTH_MONGO_HOST'],
-                    port: parseInt(process.env['AUTH_MONGO_PORT'], 10),
-                    username: process.env['AUTH_MONGO_USERNAME'],
-                    password: process.env['AUTH_MONGO_PASSWORD'],
+                    host: process.env['AUTH_MYSQL_HOST'],
+                    port: parseInt(process.env['AUTH_MYSQL_HOST'], 10),
+                    username: process.env['AUTH_MYSQL_USERNAME'],
+                    password: process.env['AUTH_MYSQL_PASSWORD'],
                     databaseName: process.env['AUTH_MONGO_BD_NAME'],
                     authSource: 'admin',
                 },
