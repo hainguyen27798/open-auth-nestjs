@@ -1,5 +1,6 @@
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 
 import { Configuration } from '@/config';
 import { ENV_MODE } from '@/constants';
@@ -9,6 +10,7 @@ import { setupSwagger } from '@/setup-swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+    initializeTransactionalContext();
     const app = await NestFactory.create(AppModule);
 
     app.enableCors({

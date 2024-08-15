@@ -11,8 +11,9 @@ export class MysqlConfig implements TypeOrmOptionsFactory {
             ...Configuration.instance.mysql,
             logging: Configuration.instance.env !== ENV_MODE.PRO,
             subscribers: [],
-            migrations: ['dist/database/migrations/*{.ts,.js}'],
-            synchronize: true,
+            entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+            synchronize: false,
+            migrations: [__dirname + '/../migrations/*{.ts,.js}'],
         };
     }
 }
