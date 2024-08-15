@@ -1,7 +1,8 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 
 import { AbstractEntity } from '@/common';
 import { UseDto } from '@/decorators';
+import { Role } from '@/modules/role/entities/role.entity';
 import { SocialProvider, UserStatus } from '@/modules/user/constants';
 import { UserDto } from '@/modules/user/dto';
 
@@ -33,4 +34,7 @@ export class User extends AbstractEntity<UserDto> {
 
     @Column({ name: 'verification_code', type: 'varchar', length: 6, nullable: true })
     verificationCode: string | null;
+
+    @ManyToOne(() => Role)
+    role: Role;
 }

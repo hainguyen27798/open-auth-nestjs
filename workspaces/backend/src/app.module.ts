@@ -7,6 +7,7 @@ import { DataSource } from 'typeorm';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 
 import { Configuration, MysqlConfig } from '@/config';
+import { RoleModule } from '@/modules/role/role.module';
 import { UserModule } from '@/modules/user/user.module';
 
 @Module({
@@ -28,6 +29,7 @@ import { UserModule } from '@/modules/user/user.module';
             },
         }),
         UserModule,
+        RoleModule,
     ],
     controllers: [],
     providers: [],
