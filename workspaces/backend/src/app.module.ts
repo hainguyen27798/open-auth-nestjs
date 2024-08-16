@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Configuration, MysqlConfig } from '@/config';
 import { RoleModule } from '@/modules/role/role.module';
+import { TokenModule } from '@/modules/token/token.module';
 import { UserModule } from '@/modules/user/user.module';
 
 @Module({
@@ -21,6 +22,7 @@ import { UserModule } from '@/modules/user/user.module';
         }),
         UserModule,
         RoleModule,
+        TokenModule,
     ],
     controllers: [],
     providers: [],
