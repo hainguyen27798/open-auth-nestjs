@@ -1,7 +1,8 @@
 import { CommandHandler, ICommand, ICommandHandler } from '@nestjs/cqrs';
 
 import { TokenService } from '@/modules/token/token.service';
-import { PairSecretToken, TAuthUser } from '@/modules/token/types';
+import { PairSecretToken } from '@/modules/token/types';
+import { TAuthUser } from '@/types';
 
 export class ProvideNewTokenCommand implements ICommand {
     constructor(

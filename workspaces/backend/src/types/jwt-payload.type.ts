@@ -5,6 +5,7 @@ export type JwtPayload = {
     userId: UUID;
     email: string;
     provider?: SocialProvider;
+    permissions: unknown;
 };
 
 export type TAuthUser = JwtPayload & {

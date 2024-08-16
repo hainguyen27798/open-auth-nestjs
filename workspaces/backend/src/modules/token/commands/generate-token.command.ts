@@ -1,7 +1,8 @@
 import { CommandHandler, ICommand, ICommandHandler } from '@nestjs/cqrs';
 
 import { TokenService } from '@/modules/token/token.service';
-import { JwtPayload, PairSecretTokenType } from '@/modules/token/types';
+import { PairSecretTokenType } from '@/modules/token/types';
+import { JwtPayload } from '@/types';
 
 export class GenerateTokenCommand implements ICommand {
     constructor(

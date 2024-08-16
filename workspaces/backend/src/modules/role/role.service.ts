@@ -36,4 +36,15 @@ export class RoleService {
 
         return role;
     }
+
+    async getPermissionsByRoleId(id: UUID) {
+        return this._RoleRepository.findOne({
+            where: {
+                id
+            },
+            relations: {
+                permissions: true
+            }
+        })
+    }
 }

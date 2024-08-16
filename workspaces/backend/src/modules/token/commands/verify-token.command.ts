@@ -1,7 +1,7 @@
 import { CommandHandler, ICommand, ICommandHandler } from '@nestjs/cqrs';
 
 import { TokenService } from '@/modules/token/token.service';
-import { JwtPayload } from '@/modules/token/types';
+import { JwtPayload } from '@/types';
 
 export class VerifyTokenCommand implements ICommand {
     constructor(public readonly token: string) {}

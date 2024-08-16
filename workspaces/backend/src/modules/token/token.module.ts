@@ -8,11 +8,12 @@ import { handlers } from '@/modules/token/commands';
 import { ClearTokenCron } from '@/modules/token/cron/clear-token.cron';
 import { RefreshTokenUsed } from '@/modules/token/entities/refresh-token-used.entity';
 import { Token } from '@/modules/token/entities/token.entity';
+import { JwtStrategy } from '@/modules/token/strategies/jwt.strategy';
 
 import { TokenService } from './token.service';
 
 @Module({
-    providers: [TokenService, ClearTokenCron, ...handlers],
+    providers: [TokenService, ClearTokenCron, JwtStrategy, ...handlers],
     imports: [
         TypeOrmModule.forFeature([Token, RefreshTokenUsed]),
         JwtModule.registerAsync({

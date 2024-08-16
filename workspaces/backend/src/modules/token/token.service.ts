@@ -10,7 +10,8 @@ import { DataSource, LessThan, Repository } from 'typeorm';
 import { RemoveTokenByKey, TokenExpires } from '@/modules/token/constants';
 import { RefreshTokenUsed } from '@/modules/token/entities/refresh-token-used.entity';
 import { Token } from '@/modules/token/entities/token.entity';
-import { JwtPayload, PairSecretToken, PairSecretTokenType, TAuthUser, TToken } from '@/modules/token/types';
+import { PairSecretToken, PairSecretTokenType, TToken } from '@/modules/token/types';
+import { JwtPayload, TAuthUser } from '@/types';
 
 @Injectable()
 export class TokenService {

@@ -38,6 +38,11 @@ export class UserService {
         return user;
     }
 
+    async findUserById(id: UUID) {
+        const data = await this._UsersRepository.findOneByOrFail({ id });
+        return new SuccessDto(null, HttpStatus.OK, data.toDto());
+    }
+
     async createSuperUser() {
         const { email, pass } = Configuration.instance.superuser;
         const superUser = await this._UsersRepository.findOneBy({ email });
