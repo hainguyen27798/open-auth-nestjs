@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { AbstractEntity } from '@/common';
 import { UseDto } from '@/decorators';
@@ -14,7 +14,7 @@ export class User extends AbstractEntity<UserDto> {
     @Column({ type: 'varchar', length: 255 })
     name: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ type: 'varchar', length: 255, unique: true })
     email: string;
 
     @Column({ type: 'varchar', nullable: true })
@@ -35,6 +35,10 @@ export class User extends AbstractEntity<UserDto> {
     @Column({ name: 'verification_code', type: 'varchar', length: 6, nullable: true })
     verificationCode: string | null;
 
+    @Column({ name: 'role_id', type: 'varchar', length: 36, nullable: true })
+    roleId: string;
+
     @ManyToOne(() => Role)
+    @JoinColumn({ name: 'role_id' })
     role: Role;
 }

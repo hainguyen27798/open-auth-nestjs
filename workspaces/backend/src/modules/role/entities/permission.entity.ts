@@ -7,9 +7,6 @@ const TABLE_NAME = 'permissions';
 
 @Entity({ name: TABLE_NAME })
 export class Permission extends AbstractEntity {
-    @Column({ type: 'varchar', length: 255 })
-    name: string;
-
     @Column({ name: 'service_name', type: 'varchar', length: 255 })
     serviceName: string;
 
