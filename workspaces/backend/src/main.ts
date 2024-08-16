@@ -1,16 +1,15 @@
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { initializeTransactionalContext } from 'typeorm-transactional';
 
 import { Configuration } from '@/config';
 import { ENV_MODE } from '@/constants';
 import { LoggerServerHelper } from '@/helpers';
+import { UserService } from '@/modules/user/user.service';
 import { setupSwagger } from '@/setup-swagger';
 
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-    initializeTransactionalContext();
     const app = await NestFactory.create(AppModule);
 
     app.enableCors({
@@ -41,6 +40,10 @@ async function bootstrap() {
     app.enableShutdownHooks();
 
     await app.listen(Configuration.instance.port);
+
+    // create superuser
+    const userService = app.get(UserService);
+    await userService.createSuperUser();
 }
 
 bootstrap()

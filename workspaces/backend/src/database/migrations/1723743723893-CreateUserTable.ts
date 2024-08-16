@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateUserTable1723730942998 implements MigrationInterface {
-    name = 'CreateUserTable1723730942998';
+export class CreateUserTable1723743723893 implements MigrationInterface {
+    name = 'CreateUserTable1723743723893';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
@@ -17,12 +17,14 @@ export class CreateUserTable1723730942998 implements MigrationInterface {
                 image text NULL,
                 verify tinyint NOT NULL DEFAULT 0,
                 verification_code varchar(6) NULL,
+                UNIQUE INDEX IDX_97672ac88f789774dd47f7c8be (email),
                 PRIMARY KEY (id)
-           ) ENGINE=InnoDB`,
+            ) ENGINE=InnoDB`,
         );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`DROP INDEX IDX_97672ac88f789774dd47f7c8be ON users`);
         await queryRunner.query(`DROP TABLE users`);
     }
 }
