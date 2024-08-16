@@ -1,9 +1,9 @@
-import { ExtractTokenCommand } from '@/modules/token/commands/extract-token.command';
-import { FindTokenCommand } from '@/modules/token/commands/find-token.command';
-import { GenerateTokenCommand } from '@/modules/token/commands/generate-token.command';
-import { ProvideNewTokenCommand } from '@/modules/token/commands/provide-new-token.command';
-import { RemoveTokenCommand } from '@/modules/token/commands/remove-token.command';
-import { VerifyTokenCommand } from '@/modules/token/commands/verify-token.command';
+import { ExtractTokenHandler } from '@/modules/token/commands/extract-token.command';
+import { FindTokenHandler } from '@/modules/token/commands/find-token.command';
+import { GenerateTokenHandler } from '@/modules/token/commands/generate-token.command';
+import { ProvideNewTokenHandler } from '@/modules/token/commands/provide-new-token.command';
+import { RemoveTokenHandler } from '@/modules/token/commands/remove-token.command';
+import { VerifyTokenHandler } from '@/modules/token/commands/verify-token.command';
 
 export * from './extract-token.command';
 export * from './find-token.command';
@@ -13,10 +13,10 @@ export * from './remove-token.command';
 export * from './verify-token.command';
 
 export const handlers = [
-    ExtractTokenCommand,
-    FindTokenCommand,
-    GenerateTokenCommand,
-    ProvideNewTokenCommand,
-    RemoveTokenCommand,
-    VerifyTokenCommand,
+    ExtractTokenHandler,
+    FindTokenHandler,
+    GenerateTokenHandler,
+    ProvideNewTokenHandler,
+    RemoveTokenHandler,
+    VerifyTokenHandler,
 ];

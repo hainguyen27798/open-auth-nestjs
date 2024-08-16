@@ -1,5 +1,5 @@
 import { Controller, Get, Query, ValidationPipe } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { PageOptionsDto } from '@/common';
 import { ResponseDto } from '@/common/dto/response.dto';
@@ -9,6 +9,7 @@ import { UserService } from '@/modules/user/user.service';
 class UserInfosDto extends ResponseDto(UserDto, true) {}
 
 @Controller('users')
+@ApiTags('Users')
 export class UserController {
     constructor(private _UserService: UserService) {}
 
