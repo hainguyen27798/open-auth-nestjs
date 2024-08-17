@@ -13,8 +13,6 @@ declare global {
     }
 }
 
-Array.prototype.toDtos = function <Entity extends AbstractEntity<Dto>, Dto extends AbstractDto>(
-    options?: unknown,
-): Dto[] {
-    return compact(map<Entity, Dto>(this as Entity[], (item) => item.toDto(options as never)));
+Array.prototype.toDtos = function <Entity extends AbstractEntity<Dto>, Dto extends AbstractDto>(): Dto[] {
+    return compact(map<Entity, Dto>(this as Entity[], (item) => item.toDto()));
 };

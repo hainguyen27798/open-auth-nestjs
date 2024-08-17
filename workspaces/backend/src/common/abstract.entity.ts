@@ -1,9 +1,10 @@
+import { plainToClass } from 'class-transformer';
 import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { AbstractDto } from '@/common';
 import { Constructor } from '@/types';
 
-export abstract class AbstractEntity<DTO extends AbstractDto = AbstractDto, TOptions = never> {
+export abstract class AbstractEntity<DTO extends AbstractDto = AbstractDto> {
     @PrimaryGeneratedColumn('uuid')
     id!: UUID;
 
@@ -13,9 +14,9 @@ export abstract class AbstractEntity<DTO extends AbstractDto = AbstractDto, TOpt
     @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
     updatedAt!: Date;
 
-    private dtoClass?: Constructor<DTO, [AbstractEntity, TOptions?]>;
+    private dtoClass?: Constructor<DTO, [AbstractEntity]>;
 
-    toDto(options?: TOptions): DTO {
+    toDto(): DTO {
         const dtoClass = this.dtoClass;
 
         if (!dtoClass) {
@@ -24,6 +25,6 @@ export abstract class AbstractEntity<DTO extends AbstractDto = AbstractDto, TOpt
             );
         }
 
-        return new dtoClass(this, options);
+        return plainToClass(dtoClass, this);
     }
 }

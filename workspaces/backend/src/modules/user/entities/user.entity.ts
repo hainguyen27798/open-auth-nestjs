@@ -36,7 +36,7 @@ export class User extends AbstractEntity<UserDto> {
     verificationCode: string | null;
 
     @Column({ name: 'role_id', type: 'varchar', length: 36, nullable: true })
-    roleId: string;
+    roleId: UUID;
 
     @ManyToOne(() => Role)
     @JoinColumn({ name: 'role_id' })

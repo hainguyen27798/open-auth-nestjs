@@ -1,7 +1,7 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
 
 import { PageOptionsDto, SuccessDto } from '@/common';
 import { Configuration } from '@/config';
@@ -26,6 +26,21 @@ export class UserService {
             skip: pageOptions.skip,
         });
         return new SuccessDto(null, HttpStatus.OK, data.toDtos());
+    }
+
+    async findUserBy(query: FindOptionsWhere<User>): Promise<User> {
+        const user = await this._UsersRepository.findOneBy(query);
+
+        if (!user) {
+            throw new NotFoundException('user_is_not_exited');
+        }
+
+        return user;
+    }
+
+    async findUserById(id: UUID) {
+        const data = await this._UsersRepository.findOneByOrFail({ id });
+        return new SuccessDto(null, HttpStatus.OK, data.toDto());
     }
 
     async createSuperUser() {

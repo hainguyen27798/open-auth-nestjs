@@ -1,3 +1,4 @@
+import { JwtModuleOptions } from '@nestjs/jwt';
 import { AuthOptions } from 'express-oauth2-jwt-bearer';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 
@@ -12,8 +13,5 @@ export type TConfig = {
         pass: string;
     };
     auth0Config: AuthOptions;
-    jwtSecret: {
-        privateKey: string;
-        publicKey: string;
-    };
+    jwtOptions: JwtModuleOptions;
 };
