@@ -14,6 +14,6 @@ export class RefreshTokenUsed extends AbstractEntity {
     @JoinColumn({ name: 'token_id' })
     token: Token;
 
-    @Column({ type: 'text' })
+    @Column({ name: 'refresh_token', type: 'text' })
     refreshToken: string;
 }

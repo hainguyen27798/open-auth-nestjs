@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import crypto from 'crypto';
@@ -10,8 +10,8 @@ import { DataSource, LessThan, Repository } from 'typeorm';
 import { RemoveTokenByKey, TokenExpires } from '@/modules/token/constants';
 import { RefreshTokenUsed } from '@/modules/token/entities/refresh-token-used.entity';
 import { Token } from '@/modules/token/entities/token.entity';
-import { PairSecretToken, PairSecretTokenType, TToken } from '@/modules/token/types';
-import { JwtPayload, TAuthUser } from '@/types';
+import { PairSecretTokenType, TToken } from '@/modules/token/types';
+import { TAuthUser } from '@/types';
 
 @Injectable()
 export class TokenService {
@@ -29,25 +29,24 @@ export class TokenService {
     async removeToken(by: RemoveTokenByKey, value: string): Promise<boolean> {
         const tokenData = await this._TokenRepository.delete({ [by]: value });
 
-        return !!tokenData;
+        return !!tokenData.affected;
     }
 
-    async generateToken(payload: JwtPayload, createNew = false): Promise<PairSecretTokenType> {
-        const tokenPayload: TAuthUser = {
-            ...payload,
-            session: this.createSession(),
-        };
+    async generateToken(payload: TAuthUser, createNew = false): Promise<PairSecretTokenType> {
+        if (createNew) {
+            payload.session = this.createSession();
+        }
 
         // create pair jwt token
-        const accessToken: string = this.createJwtToken(tokenPayload, TokenExpires.ACCESS_TOKEN);
-        const refreshToken: string = this.createJwtToken(tokenPayload, TokenExpires.REFRESH_TOKEN);
+        const accessToken: string = this.createJwtToken(payload, TokenExpires.ACCESS_TOKEN);
+        const refreshToken: string = this.createJwtToken(payload, TokenExpires.REFRESH_TOKEN);
 
         // update refresh token
         await this.saveToken(
             {
                 userId: payload.userId,
                 refreshToken: refreshToken,
-                session: tokenPayload.session,
+                session: payload.session,
             },
             createNew,
         );
@@ -55,30 +54,27 @@ export class TokenService {
         return { refreshToken, accessToken };
     }
 
-    async provideNewToken(payload: TAuthUser, oldRefreshToken: string): Promise<PairSecretToken> {
-        const oldRefreshTokenExisting = this._TokenRepository.findOneBy({
-            userId: payload.userId,
-            session: payload.session,
-            refreshTokensUsed: {
-                refreshToken: oldRefreshToken,
-            },
+    async checkRefreshTokenValid(payload: TAuthUser, oldRefreshToken: string): Promise<boolean> {
+        const oldRefreshTokenExisting = await this._RefreshTokenUsedRepository.findOneBy({
+            refreshToken: oldRefreshToken,
         });
 
-        // create new pair jwt token
-        const accessToken: string = this.createJwtToken(payload, TokenExpires.ACCESS_TOKEN);
-        const refreshToken: string = this.createJwtToken(payload, TokenExpires.REFRESH_TOKEN);
+        if (!!oldRefreshTokenExisting) {
+            // remove token
+            await this.removeToken(RemoveTokenByKey.session, payload.session);
+            throw new BadRequestException('account_was_stolen');
+        }
 
-        // update token
-        await this.saveToken({
+        await this._TokenRepository.findOneByOrFail({
             userId: payload.userId,
             session: payload.session,
-            refreshToken: refreshToken,
+            refreshToken: oldRefreshToken,
         });
 
-        return { refreshToken, accessToken };
+        return true;
     }
 
-    private createJwtToken(payload: JwtPayload, expiresIn: string) {
+    private createJwtToken(payload: TAuthUser, expiresIn: string) {
         return this._JwtService.sign(payload, {
             expiresIn,
         });
@@ -88,7 +84,7 @@ export class TokenService {
         return crypto.randomBytes(32).toString('hex');
     }
 
-    async verifyToken(token: string): Promise<JwtPayload> {
+    async verifyToken(token: string): Promise<TAuthUser> {
         return this._JwtService.verify(token);
     }
 

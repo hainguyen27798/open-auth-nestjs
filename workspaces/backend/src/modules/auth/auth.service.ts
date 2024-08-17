@@ -1,4 +1,11 @@
-import { BadRequestException, ConflictException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+    BadRequestException,
+    ConflictException,
+    ForbiddenException,
+    HttpStatus,
+    Injectable,
+    Logger,
+} from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import _ from 'lodash';
 
@@ -7,12 +14,17 @@ import { BcryptHelper } from '@/helpers';
 import { GetPermissionsByRoleIdCommand } from '@/modules/role/commands';
 import { GRANT_ANY_ATTRIBUTES } from '@/modules/role/constants/grant';
 import { Role } from '@/modules/role/entities/role.entity';
-import { GenerateTokenCommand, RemoveTokenCommand } from '@/modules/token/commands';
+import {
+    CheckRefreshTokenValidCommand,
+    GenerateTokenCommand,
+    RemoveTokenCommand,
+    VerifyTokenCommand,
+} from '@/modules/token/commands';
 import { RemoveTokenByKey } from '@/modules/token/constants';
 import { PairSecretToken, PairSecretTokenType } from '@/modules/token/types';
 import { FindUserByCommand } from '@/modules/user/commands';
 import { User } from '@/modules/user/entities/user.entity';
-import { JwtPayload } from '@/types';
+import { TAuthUser } from '@/types';
 
 @Injectable()
 export class AuthService {
@@ -38,7 +50,7 @@ export class AuthService {
                         `${permission.resource}:${permission.action}${permission.attributes !== GRANT_ANY_ATTRIBUTES ? `[${permission.attributes}]` : ''}`,
                 );
 
-                const payload: JwtPayload = {
+                const payload: TAuthUser = {
                     name: currentAccount.name,
                     userId: currentAccount.id,
                     email: currentAccount.email,
@@ -60,6 +72,33 @@ export class AuthService {
         throw new BadRequestException('email_or_password_is_incorrect');
     }
 
+    async handleRefreshToken(refreshToken: string) {
+        let userPayload: TAuthUser;
+
+        try {
+            const payload = await this.verifyToken(refreshToken);
+
+            userPayload = {
+                userId: payload.userId,
+                name: payload.name,
+                email: payload.email,
+                permissions: payload.permissions,
+                session: payload.session,
+            };
+
+            await this.checkRefreshTokenValid(userPayload, refreshToken);
+        } catch (e) {
+            Logger.error(e.toString());
+            // remove token
+            await this.removeToken(RemoveTokenByKey.session, userPayload.session);
+            throw new ForbiddenException('token_is_expired_or_invalid');
+        }
+
+        const tokenObj: PairSecretToken = await this.generateToken(userPayload);
+
+        return new SuccessDto(null, HttpStatus.OK, tokenObj);
+    }
+
     async logout(refreshToken: string): Promise<SuccessDto> {
         const isSuccess: boolean = await this.removeToken(RemoveTokenByKey.refreshToken, refreshToken);
         if (isSuccess) {
@@ -72,11 +111,19 @@ export class AuthService {
         return this._CommandBus.execute(new FindUserByCommand({ email }));
     }
 
-    private async generateToken(payload: JwtPayload, createNew = false): Promise<PairSecretTokenType> {
+    private async generateToken(payload: TAuthUser, createNew = false): Promise<PairSecretTokenType> {
         return this._CommandBus.execute(new GenerateTokenCommand(payload, createNew));
     }
 
     private async removeToken(by: RemoveTokenByKey, value: string): Promise<boolean> {
         return this._CommandBus.execute(new RemoveTokenCommand(by, value));
+    }
+
+    private async verifyToken(token: string): Promise<TAuthUser> {
+        return this._CommandBus.execute(new VerifyTokenCommand(token));
+    }
+
+    private async checkRefreshTokenValid(payload: TAuthUser, oldRefreshToken: string): Promise<boolean> {
+        return this._CommandBus.execute(new CheckRefreshTokenValidCommand(payload, oldRefreshToken));
     }
 }
