@@ -28,11 +28,11 @@ services:
             context: workspaces/backend
             dockerfile: .docker/Dockerfile
         environment:
-            AUTH_MONGO_BD_NAME: $AUTH_MONGO_BD_NAME
-            AUTH_MONGO_USERNAME: $AUTH_MONGO_USERNAME
-            AUTH_MONGO_PASSWORD: $AUTH_MONGO_PASSWORD
-            AUTH_MONGO_HOST: $AUTH_MONGO_HOST
-            AUTH_MONGO_PORT: $AUTH_MONGO_PORT
+            AUTH_MYSQL_DATABASE: $AUTH_MYSQL_DATABASE
+            AUTH_MYSQL_USERNAME: $AUTH_MYSQL_USERNAME
+            AUTH_MYSQL_PASSWORD: $AUTH_MYSQL_PASSWORD
+            AUTH_MYSQL_HOST: $AUTH_MYSQL_HOST
+            AUTH_MYSQL_PORT: $AUTH_MYSQL_PORT
             AUTH_API_PORT: $AUTH_API_PORT
             SUPERUSER_EMAIL: $SUPERUSER_EMAIL
             SUPERUSER_PASS: $SUPERUSER_PASS
