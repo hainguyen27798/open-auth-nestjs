@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddTokenTables1723804390524 implements MigrationInterface {
-    name = 'AddTokenTables1723804390524';
+export class AddTokenTables1723887408262 implements MigrationInterface {
+    name = 'AddTokenTables1723887408262';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
@@ -12,7 +12,7 @@ export class AddTokenTables1723804390524 implements MigrationInterface {
                 token_id varchar(255) NOT NULL,
                 refresh_token text NOT NULL,
                 PRIMARY KEY (id)
-             ) ENGINE=InnoDB`,
+            ) ENGINE=InnoDB`,
         );
         await queryRunner.query(
             `CREATE TABLE tokens (

@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { SuccessDto } from '@/common';
 import { BcryptHelper } from '@/helpers';
 import { GetPermissionsByRoleIdCommand } from '@/modules/role/commands';
+import { GRANT_ANY_ATTRIBUTES } from '@/modules/role/constants/grant';
 import { Role } from '@/modules/role/entities/role.entity';
 import { GenerateTokenCommand, RemoveTokenCommand } from '@/modules/token/commands';
 import { RemoveTokenByKey } from '@/modules/token/constants';
@@ -31,21 +32,10 @@ export class AuthService {
                     new GetPermissionsByRoleIdCommand(currentAccount.roleId),
                 );
 
-                const groupPermissionsByMethod = _.groupBy(role.permissions, 'permissionAccessMethod');
-                const permissions = _.reduce(
-                    _.keys(groupPermissionsByMethod),
-                    (rs, method) => ({
-                        ...rs,
-                        [method]: _.reduce(
-                            groupPermissionsByMethod[method],
-                            (rsMethod, permission) => ({
-                                ...rsMethod,
-                                [permission?.permissionAccessPath]: true,
-                            }),
-                            {},
-                        ),
-                    }),
-                    {},
+                const permissions = _.map(
+                    role.permissions,
+                    (permission) =>
+                        `${permission.resource}:${permission.action}${permission.attributes !== GRANT_ANY_ATTRIBUTES ? `[${permission.attributes}]` : ''}`,
                 );
 
                 const payload: JwtPayload = {

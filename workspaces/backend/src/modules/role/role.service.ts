@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 
 import { SUPERUSER } from '@/constants';
-import { PermissionAccessMethod } from '@/modules/role/constants';
+import { GRANT_ALL_SERVICE, GRANT_ANY, GRANT_ANY_ATTRIBUTES, GRANT_OPERATION } from '@/modules/role/constants/grant';
 import { Permission } from '@/modules/role/entities/permission.entity';
 import { Role } from '@/modules/role/entities/role.entity';
 
@@ -19,9 +19,10 @@ export class RoleService {
 
         if (!role) {
             const permission = this._PermissionsRepository.create({
-                serviceName: '*',
-                permissionAccessPath: '*',
-                permissionAccessMethod: PermissionAccessMethod['*'],
+                serviceName: GRANT_ALL_SERVICE,
+                resource: GRANT_ANY,
+                action: `${GRANT_OPERATION.ANY}:${GRANT_ANY}`,
+                attributes: GRANT_ANY_ATTRIBUTES,
             });
 
             await entityManager.save(permission);
@@ -40,11 +41,11 @@ export class RoleService {
     async getPermissionsByRoleId(id: UUID) {
         return this._RoleRepository.findOne({
             where: {
-                id
+                id,
             },
             relations: {
-                permissions: true
-            }
-        })
+                permissions: true,
+            },
+        });
     }
 }
