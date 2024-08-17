@@ -1,15 +1,12 @@
 import { Controller, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiHeader, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 
-import { MessageResponseDto, ResponseDto } from '@/common';
 import { HEADER_KEY } from '@/constants';
+import { ApiDataResponse } from '@/decorators';
 import { AuthService } from '@/modules/auth/auth.service';
 import { LoginDto, TokenInfoDto, UserTokenInfoDto } from '@/modules/auth/dto';
 import { LocalAuthGuard } from '@/modules/auth/guards/local-auth.guard';
-
-class UserTokenInfoDtoType extends ResponseDto(UserTokenInfoDto) {}
-class TokenInfoDtoType extends ResponseDto(TokenInfoDto) {}
 
 @Controller('auth')
 @ApiTags('Local Auth')
@@ -21,8 +18,8 @@ export class AuthController {
     @ApiBody({
         type: LoginDto,
     })
-    @ApiOkResponse({
-        type: UserTokenInfoDtoType,
+    @ApiDataResponse({
+        type: UserTokenInfoDto,
         description: 'User info with token',
     })
     login(@Req() req: Request) {
@@ -34,8 +31,8 @@ export class AuthController {
         name: HEADER_KEY.REFRESH_TOKEN,
         required: true,
     })
-    @ApiOkResponse({
-        type: TokenInfoDtoType,
+    @ApiDataResponse({
+        type: TokenInfoDto,
         description: 'New token info',
     })
     refreshToken(@Req() req: Request) {
@@ -48,9 +45,7 @@ export class AuthController {
         name: HEADER_KEY.REFRESH_TOKEN,
         required: true,
     })
-    @ApiOkResponse({
-        type: MessageResponseDto,
-    })
+    @ApiDataResponse({})
     logout(@Req() req: Request) {
         const refreshToken = req.get(HEADER_KEY.REFRESH_TOKEN);
         return this._AuthService.logout(refreshToken);
