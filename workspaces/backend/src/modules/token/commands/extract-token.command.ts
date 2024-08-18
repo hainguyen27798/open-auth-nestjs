@@ -1,7 +1,7 @@
 import { CommandHandler, ICommand, ICommandHandler } from '@nestjs/cqrs';
 
 import { TokenService } from '@/modules/token/token.service';
-import { TAuthUser } from '@/modules/token/types';
+import { TAuthUser } from '@/types';
 
 export class ExtractTokenCommand implements ICommand {
     constructor(public readonly token: string) {}

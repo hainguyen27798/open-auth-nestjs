@@ -1,23 +1,18 @@
 import { CommandHandler, ICommand, ICommandHandler } from '@nestjs/cqrs';
+import { FindOptionsWhere } from 'typeorm';
 
-import { toObjectId } from '@/helpers';
-import { UserDocument } from '@/modules/user/schemas/user.schema';
-import { FilterUserType } from '@/modules/user/types';
+import { User } from '@/modules/user/entities/user.entity';
 import { UserService } from '@/modules/user/user.service';
 
 export class FindUserByCommand implements ICommand {
-    constructor(public readonly query: FilterUserType) {}
+    constructor(public readonly query: FindOptionsWhere<User>) {}
 }
 
 @CommandHandler(FindUserByCommand)
-export class FindUserByHandler implements ICommandHandler<FindUserByCommand, UserDocument> {
+export class FindUserByHandler implements ICommandHandler<FindUserByCommand, User> {
     constructor(private _UserService: UserService) {}
 
-    execute(command: FindUserByCommand): Promise<UserDocument> {
-        const query = command.query;
-        if (query.id) {
-            query.id = toObjectId(query.id);
-        }
-        return this._UserService.findUserBy(query);
+    execute(command: FindUserByCommand) {
+        return this._UserService.findUserBy(command.query);
     }
 }

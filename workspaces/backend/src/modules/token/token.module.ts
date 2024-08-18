@@ -1,40 +1,25 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
-import {
-    ExtractTokenHandler,
-    FindTokenHandler,
-    GenerateTokenHandler,
-    ProvideNewTokenHandler,
-    RemoveTokenHandler,
-    VerifyTokenHandler,
-} from '@/modules/token/commands';
+import { JwtConfig } from '@/config';
+import { handlers } from '@/modules/token/commands';
 import { ClearTokenCron } from '@/modules/token/cron/clear-token.cron';
-import { Token, TokenSchema } from '@/modules/token/schemas/token.schema';
+import { RefreshTokenUsed } from '@/modules/token/entities/refresh-token-used.entity';
+import { Token } from '@/modules/token/entities/token.entity';
 import { JwtStrategy } from '@/modules/token/strategies/jwt.strategy';
 
 import { TokenService } from './token.service';
 
-const handlers = [
-    GenerateTokenHandler,
-    RemoveTokenHandler,
-    ExtractTokenHandler,
-    FindTokenHandler,
-    ProvideNewTokenHandler,
-    VerifyTokenHandler,
-];
-
 @Module({
-    providers: [...handlers, TokenService, JwtStrategy, ClearTokenCron],
+    providers: [TokenService, ClearTokenCron, JwtStrategy, ...handlers],
     imports: [
-        MongooseModule.forFeature([
-            {
-                name: Token.name,
-                schema: TokenSchema,
-            },
-        ]),
-        JwtModule.register({}),
+        TypeOrmModule.forFeature([Token, RefreshTokenUsed]),
+        JwtModule.registerAsync({
+            imports: [ConfigModule],
+            useClass: JwtConfig,
+        }),
     ],
 })
 export class TokenModule {}

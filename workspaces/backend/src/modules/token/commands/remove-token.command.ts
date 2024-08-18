@@ -1,11 +1,11 @@
 import { CommandHandler, ICommand, ICommandHandler } from '@nestjs/cqrs';
 
+import { RemoveTokenByKey } from '@/modules/token/constants';
 import { TokenService } from '@/modules/token/token.service';
-import { RemoveTokenByType } from '@/modules/token/types';
 
 export class RemoveTokenCommand implements ICommand {
     constructor(
-        public readonly by: RemoveTokenByType,
+        public readonly by: RemoveTokenByKey,
         public readonly value: string,
     ) {}
 }

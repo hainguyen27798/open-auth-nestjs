@@ -9,35 +9,29 @@ import {
 import { CommandBus } from '@nestjs/cqrs';
 import _ from 'lodash';
 
-import { SuccessDto } from '@/dto/core';
+import { SuccessDto } from '@/common';
 import { BcryptHelper } from '@/helpers';
-import { AccountDto } from '@/modules/auth/dto';
+import { GetPermissionsByRoleIdCommand } from '@/modules/role/commands';
+import { GRANT_ANY_ATTRIBUTES } from '@/modules/role/constants/grant';
+import { Role } from '@/modules/role/entities/role.entity';
 import {
-    ExtractTokenCommand,
-    FindTokenCommand,
+    CheckRefreshTokenValidCommand,
     GenerateTokenCommand,
-    ProvideNewTokenCommand,
     RemoveTokenCommand,
     VerifyTokenCommand,
 } from '@/modules/token/commands';
-import { TokenDocument } from '@/modules/token/schemas/token.schema';
-import { JwtPayload, PairSecretToken, PairSecretTokenType, RemoveTokenByType, TAuthUser } from '@/modules/token/types';
-import { ActiveUserCommand, CreateUserCommand, FindUserByCommand } from '@/modules/user/commands';
-import { UserRoles } from '@/modules/user/constants';
-import { UserDocument } from '@/modules/user/schemas/user.schema';
+import { RemoveTokenByKey } from '@/modules/token/constants';
+import { PairSecretToken, PairSecretTokenType } from '@/modules/token/types';
+import { FindUserByCommand } from '@/modules/user/commands';
+import { User } from '@/modules/user/entities/user.entity';
+import { TAuthUser } from '@/types';
 
 @Injectable()
 export class AuthService {
-    constructor(private _CommandBus: CommandBus) {}
-
-    async createNewAccount(accountDto: AccountDto) {
-        await this._CommandBus.execute(new CreateUserCommand(accountDto));
-
-        return new SuccessDto('create_account_successfully');
-    }
+    constructor(private readonly _CommandBus: CommandBus) {}
 
     async validateUser(email: string, password: string): Promise<SuccessDto> {
-        const currentAccount: UserDocument = await this.findUserByEmail(email);
+        const currentAccount = await this.findUserByEmail(email);
 
         // Todo: it will be enable later
         // if (currentAccount.status !== UserStatus.ACTIVE) {
@@ -46,11 +40,21 @@ export class AuthService {
 
         if (currentAccount) {
             if (await BcryptHelper.validatePassword(password, currentAccount.password)) {
-                const payload: JwtPayload = {
+                const role: Role = await this._CommandBus.execute(
+                    new GetPermissionsByRoleIdCommand(currentAccount.roleId),
+                );
+
+                const permissions = _.map(
+                    role.permissions,
+                    (permission) =>
+                        `${permission.resource}:${permission.action}${permission.attributes !== GRANT_ANY_ATTRIBUTES ? `[${permission.attributes}]` : ''}`,
+                );
+
+                const payload: TAuthUser = {
                     name: currentAccount.name,
-                    id: currentAccount._id.toString(),
-                    role: currentAccount.role as UserRoles,
+                    userId: currentAccount.id,
                     email: currentAccount.email,
+                    permissions,
                 };
 
                 // create jwt token
@@ -68,87 +72,58 @@ export class AuthService {
         throw new BadRequestException('email_or_password_is_incorrect');
     }
 
-    private async findUserByEmail(email: string): Promise<UserDocument> {
-        return this._CommandBus.execute(new FindUserByCommand({ email }));
+    async handleRefreshToken(refreshToken: string) {
+        let userPayload: TAuthUser;
+
+        try {
+            const payload = await this.verifyToken(refreshToken);
+
+            userPayload = {
+                userId: payload.userId,
+                name: payload.name,
+                email: payload.email,
+                permissions: payload.permissions,
+                session: payload.session,
+            };
+
+            await this.checkRefreshTokenValid(userPayload, refreshToken);
+        } catch (e) {
+            Logger.error(e.toString());
+            // remove token
+            await this.removeToken(RemoveTokenByKey.session, userPayload.session);
+            throw new ForbiddenException('token_is_expired_or_invalid');
+        }
+
+        const tokenObj: PairSecretToken = await this.generateToken(userPayload);
+
+        return new SuccessDto(null, HttpStatus.OK, tokenObj);
     }
 
     async logout(refreshToken: string): Promise<SuccessDto> {
-        const isSuccess: boolean = await this.removeToken('refreshToken', refreshToken);
+        const isSuccess: boolean = await this.removeToken(RemoveTokenByKey.refreshToken, refreshToken);
         if (isSuccess) {
             return new SuccessDto('logout_successfully');
         }
         throw new BadRequestException('Invalid Token');
     }
 
-    async handleRefreshToken(refreshToken: string): Promise<SuccessDto> {
-        const userPayload: TAuthUser = await this.extractToken(refreshToken);
-
-        if (!userPayload) {
-            throw new BadRequestException('Invalid Token');
-        }
-
-        const token: TokenDocument = await this.findToken(userPayload.session);
-
-        if (!token) {
-            throw new BadRequestException('Invalid Token');
-        }
-
-        if (_.includes(token.refreshTokenUsed, refreshToken)) {
-            // remove token
-            await this.removeToken('session', token.session);
-            throw new BadRequestException('Account was stolen');
-        }
-
-        if (token.refreshToken !== refreshToken) {
-            throw new BadRequestException('Invalid Token');
-        }
-
-        try {
-            await this.verifyToken(refreshToken);
-            const tokenObj: PairSecretToken = await this.provideNewToken(
-                {
-                    name: userPayload.name,
-                    id: userPayload.id,
-                    email: userPayload.email,
-                    role: userPayload.role,
-                    session: userPayload.session,
-                },
-                refreshToken,
-            );
-            return new SuccessDto(null, HttpStatus.CREATED, tokenObj);
-        } catch (e) {
-            Logger.error(e.toString());
-            // remove token
-            await this.removeToken('session', token.session);
-            throw new ForbiddenException('token_is_expired');
-        }
+    private async findUserByEmail(email: string): Promise<User> {
+        return this._CommandBus.execute(new FindUserByCommand({ email }));
     }
 
-    activeAccount(verificationCode: string, newPassword: string) {
-        return this._CommandBus.execute(new ActiveUserCommand(verificationCode, newPassword));
-    }
-
-    private async generateToken(payload: JwtPayload, createNew = false): Promise<PairSecretTokenType> {
+    private async generateToken(payload: TAuthUser, createNew = false): Promise<PairSecretTokenType> {
         return this._CommandBus.execute(new GenerateTokenCommand(payload, createNew));
     }
 
-    private async removeToken(by: RemoveTokenByType, value: string): Promise<boolean> {
+    private async removeToken(by: RemoveTokenByKey, value: string): Promise<boolean> {
         return this._CommandBus.execute(new RemoveTokenCommand(by, value));
     }
 
-    private async findToken(session: string): Promise<TokenDocument> {
-        return this._CommandBus.execute(new FindTokenCommand(session));
-    }
-
-    private async provideNewToken(payload: TAuthUser, oldRefreshToken: string): Promise<PairSecretToken> {
-        return this._CommandBus.execute(new ProvideNewTokenCommand(payload, oldRefreshToken));
-    }
-
-    private async extractToken(token: string) {
-        return this._CommandBus.execute(new ExtractTokenCommand(token));
-    }
-
-    private async verifyToken(token: string): Promise<JwtPayload> {
+    private async verifyToken(token: string): Promise<TAuthUser> {
         return this._CommandBus.execute(new VerifyTokenCommand(token));
+    }
+
+    private async checkRefreshTokenValid(payload: TAuthUser, oldRefreshToken: string): Promise<boolean> {
+        return this._CommandBus.execute(new CheckRefreshTokenValidCommand(payload, oldRefreshToken));
     }
 }

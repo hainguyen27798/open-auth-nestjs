@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { SocialProvider, UserMappingRoles } from '@/modules/user/constants';
+import { SocialProvider } from '@/modules/user/constants';
 
 export class TokenInfoDto {
     @ApiProperty({ default: 'JWT Token' })
@@ -16,9 +16,6 @@ export class UserTokenInfoDto extends TokenInfoDto {
 
     @ApiProperty()
     name: string;
-
-    @ApiProperty({ enum: UserMappingRoles, default: UserMappingRoles.USER })
-    role: string;
 
     @ApiProperty({ default: 'email@example.com' })
     email: string;

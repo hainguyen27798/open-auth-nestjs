@@ -1,4 +1,5 @@
-export * from './active-user.command';
-export * from './create-user.command';
+import { FindUserByHandler } from '@/modules/user/commands/find-user-by.command';
+
 export * from './find-user-by.command';
-export * from './verify-or-create-social-user.command';
+
+export const handlers = [FindUserByHandler];

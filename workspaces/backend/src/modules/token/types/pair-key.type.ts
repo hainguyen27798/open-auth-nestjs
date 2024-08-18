@@ -8,8 +8,8 @@ export type PairSecretToken = {
     refreshToken: string;
 };
 
-export type TToken = PairKey & {
-    user: string;
+export type TToken = {
+    userId: UUID;
     session: string;
     refreshToken: string;
 };

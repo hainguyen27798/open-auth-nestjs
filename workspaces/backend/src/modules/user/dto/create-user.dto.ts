@@ -1,8 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
-
-import { UserMappingRoles } from '@/modules/user/constants';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
 @Exclude()
 export class CreateUserDto {
@@ -16,10 +14,4 @@ export class CreateUserDto {
     @IsEmail()
     @ApiProperty()
     email: string;
-
-    @Expose()
-    @IsOptional()
-    @IsEnum(UserMappingRoles, { message: 'role is invalid' })
-    @ApiProperty()
-    roleMapping: string;
 }

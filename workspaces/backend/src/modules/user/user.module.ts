@@ -1,31 +1,16 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
-import {
-    ActiveUserHandler,
-    CreateUserHandler,
-    FindUserByHandler,
-    VerifyOrCreateSocialUserHandler,
-} from '@/modules/user/commands';
-import { User, UserSchema } from '@/modules/user/schemas/user.schema';
+import { handlers } from '@/modules/user/commands';
+import { User } from '@/modules/user/entities/user.entity';
 
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
-const handler = [FindUserByHandler, ActiveUserHandler, CreateUserHandler, VerifyOrCreateSocialUserHandler];
-
 @Module({
-    providers: [UserService, ...handler],
     controllers: [UserController],
-    imports: [
-        MongooseModule.forFeature([
-            {
-                name: User.name,
-                schema: UserSchema,
-            },
-        ]),
-        CqrsModule,
-    ],
+    providers: [UserService, ...handlers],
+    imports: [TypeOrmModule.forFeature([User]), CqrsModule],
 })
 export class UserModule {}
