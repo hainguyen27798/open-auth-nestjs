@@ -1,9 +1,6 @@
 ## Development stage
 FROM node:20.16.0-alpine AS builder
 
-# Set the working directory inside the container
-WORKDIR /app
-
 # Copy package.json and yarn.lock (if available)
 COPY package.json yarn.lock ./
 
@@ -16,12 +13,14 @@ COPY . .
 # build
 RUN yarn build
 
-RUN yarn install --production --ignore-scripts --prefer-offline --frozen-lockfile
+FROM node:20.16.0-alpine AS node_modules
+
+COPY package.json yarn.lock ./
+
+RUN yarn install --production --frozen-lockfile
 
 # Production Stage
 FROM node:20.16.0-alpine
-
-RUN apk add --no-cache tini
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -29,6 +28,6 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 # Copy bundle build
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/dist ./dist
+COPY --from=node_modules node_modules ./node_modules
+COPY --from=builder package.json ./
+COPY --from=builder dist ./dist

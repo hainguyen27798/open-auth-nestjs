@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { SuccessDto } from '@/common';
 import { GRANT_ALL_SERVICE, GRANT_ANY, GRANT_ANY_ATTRIBUTES, GRANT_OPERATION } from '@/modules/role/constants/grant';
@@ -9,10 +9,10 @@ import { Permission } from '@/modules/role/entities/permission.entity';
 
 @Injectable()
 export class PermissionService {
-    constructor(@InjectRepository(Permission) private readonly _PermissionsRepository: Repository<Permission>) {}
+    constructor(@InjectRepository(Permission) private readonly _PermissionRepository: Repository<Permission>) {}
 
     createSuperRole() {
-        return this._PermissionsRepository.create({
+        return this._PermissionRepository.create({
             serviceName: GRANT_ALL_SERVICE,
             resource: GRANT_ANY,
             action: `${GRANT_OPERATION.ANY}:${GRANT_ANY}`,
@@ -21,12 +21,12 @@ export class PermissionService {
     }
 
     async getAll() {
-        const permissions = await this._PermissionsRepository.find();
+        const permissions = await this._PermissionRepository.find();
         return new SuccessDto(null, HttpStatus.OK, permissions.toDtos());
     }
 
     async getById(id: UUID) {
-        const permission = await this._PermissionsRepository.findOneBy({ id });
+        const permission = await this._PermissionRepository.findOneBy({ id });
 
         if (!permission) {
             throw new NotFoundException('permission_not_found');
@@ -36,12 +36,12 @@ export class PermissionService {
     }
 
     async create(payload: CreatePermissionDto) {
-        const permission = await this._PermissionsRepository.save(this._PermissionsRepository.create(payload));
+        const permission = await this._PermissionRepository.save(this._PermissionRepository.create(payload));
         return new SuccessDto('create_permission_success', HttpStatus.CREATED, permission.toDto());
     }
 
     async update(id: UUID, payload: UpdatePermissionDto) {
-        await this._PermissionsRepository.save({
+        await this._PermissionRepository.save({
             id,
             ...payload,
         });
@@ -49,7 +49,7 @@ export class PermissionService {
     }
 
     async delete(id: UUID) {
-        const res = await this._PermissionsRepository.delete({
+        const res = await this._PermissionRepository.delete({
             id,
         });
 
@@ -58,5 +58,17 @@ export class PermissionService {
         }
 
         return new SuccessDto('delete_permission_success');
+    }
+
+    async checkPermissionIdsExists(permissionIds: UUID[]) {
+        const [permission, total] = await this._PermissionRepository.findAndCountBy({
+            id: In(permissionIds),
+        });
+
+        if (total !== permissionIds.length) {
+            throw new NotFoundException('some_permissions_not_found');
+        }
+
+        return permission;
     }
 }
