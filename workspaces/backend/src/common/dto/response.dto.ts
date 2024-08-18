@@ -1,30 +1,15 @@
 import { HttpStatus } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Constructor } from '@/types';
+import { AbstractDto } from '@/common';
 
-export class MessageResponseDto {
+export class ResponseDto<DTO extends AbstractDto> {
     @ApiProperty()
     message: string;
 
     @ApiProperty({ enum: HttpStatus, default: HttpStatus.OK })
     statusCode: HttpStatus;
-}
 
-export function ResponseDto<TBase extends Constructor>(Base: TBase, isArray = false) {
-    class BaseClass extends MessageResponseDto {
-        @ApiProperty({ type: () => Base, isArray })
-        data?: TBase;
-    }
-
-    if (isArray) {
-        class BaseListClass extends BaseClass {
-            @ApiProperty()
-            metadata?: any;
-        }
-
-        return BaseListClass;
-    }
-
-    return BaseClass;
+    @ApiProperty()
+    data?: DTO;
 }
