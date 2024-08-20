@@ -9,10 +9,13 @@
         "lint": "next lint"
     },
     "dependencies": {
+        "@ant-design/nextjs-registry": "^1.0.1",
+        "antd": "^5.20.2",
         "next": "14.2.5",
         "next-intl": "^3.17.3",
         "react": "^18",
-        "react-dom": "^18"
+        "react-dom": "^18",
+        "styled-components": "^6.1.12"
     },
     "devDependencies": {
         "@types/node": "^20",
@@ -20,6 +23,7 @@
         "@types/react-dom": "^18",
         "@typescript-eslint/eslint-plugin": "^8.1.0",
         "@typescript-eslint/parser": "^8.1.0",
+        "autoprefixer": "^10.4.20",
         "eslint": "^8",
         "eslint-config-import": "^0.13.0",
         "eslint-config-next": "14.2.5",

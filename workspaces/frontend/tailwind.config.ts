@@ -10,6 +10,7 @@ const config: Config = {
             },
         },
     },
+    important: 'html',
     plugins: [],
 };
 export default config;

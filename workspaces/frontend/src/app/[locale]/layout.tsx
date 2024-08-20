@@ -1,10 +1,14 @@
 import './globals.css';
 
+import { AntdRegistry } from '@ant-design/nextjs-registry';
+import { ConfigProvider } from 'antd';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import React from 'react';
+
+import StyledComponentsRegistry from '@/lib/registry';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,10 +25,22 @@ export default async function RootLayout({ children, params: { locale } }: Reado
     const messages = await getMessages();
 
     return (
-        <html lang="en">
-            <body className={inter.className}>
+        <html lang={locale}>
+            <body className={inter.className} suppressHydrationWarning>
                 <NextIntlClientProvider messages={messages} locale={locale}>
-                    {children}
+                    <StyledComponentsRegistry>
+                        <AntdRegistry>
+                            <ConfigProvider
+                                theme={{
+                                    token: {
+                                        colorPrimary: '#6c757d',
+                                    },
+                                }}
+                            >
+                                {children}
+                            </ConfigProvider>
+                        </AntdRegistry>
+                    </StyledComponentsRegistry>
                 </NextIntlClientProvider>
             </body>
         </html>
