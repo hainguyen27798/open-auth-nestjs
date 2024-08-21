@@ -1,9 +1,10 @@
 import _ from 'lodash-es';
+import { cookies } from 'next/headers';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 
-import { defaultLocale, locales } from '@/constants';
+import { CookiesKey, defaultLocale, locales } from '@/constants';
 
 const protectedRoutes = ['/'];
 const publicRoutes = ['/login'];
@@ -22,9 +23,9 @@ export default function middleware(request: NextRequest) {
     const isProtectedRoute = protectedRoutes.includes(path);
     const isPublicRoute = publicRoutes.includes(path);
 
-    // const cookie = cookies().get('session')?.value;
+    const accessToken = cookies().get(CookiesKey.refreshToken)?.value;
 
-    if (isProtectedRoute && !isPublicRoute && locale) {
+    if (isProtectedRoute && !isPublicRoute && locale && !accessToken) {
         return NextResponse.redirect(new URL(`/${_.get(pathsMatch, 1)}/login`, request.url));
     }
 
