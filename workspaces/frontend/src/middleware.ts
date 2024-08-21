@@ -1,14 +1,36 @@
+import _ from 'lodash-es';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 
-export default createMiddleware({
-    // A list of all locales that are supported
-    locales: ['en', 'vi'],
+import { defaultLocale, locales } from '@/constants';
 
-    // Used when no locale matches
-    defaultLocale: 'en',
+const protectedRoutes = ['/'];
+const publicRoutes = ['/login'];
+
+const intlMiddleware = createMiddleware({
+    locales,
+    defaultLocale,
 });
 
+const regex = /^\/(en|vi)(.*)?$/;
+
+export default function middleware(request: NextRequest) {
+    const pathsMatch = request.nextUrl?.pathname?.match(regex);
+    const path = _.get(pathsMatch, 2) || '/';
+    const locale = _.get(pathsMatch, 1);
+    const isProtectedRoute = protectedRoutes.includes(path);
+    const isPublicRoute = publicRoutes.includes(path);
+
+    // const cookie = cookies().get('session')?.value;
+
+    if (isProtectedRoute && !isPublicRoute && locale) {
+        return NextResponse.redirect(new URL(`/${_.get(pathsMatch, 1)}/login`, request.url));
+    }
+
+    return intlMiddleware(request);
+}
+
 export const config = {
-    // Match only internationalized pathnames
     matcher: ['/', '/(en|vi)/:path*'],
 };
