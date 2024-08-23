@@ -15,6 +15,20 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
     title: 'Open Auth',
     description: 'Authentication and Authorization',
+    icons: {
+        icon: [
+            {
+                media: '(prefers-color-scheme: light)',
+                url: '/icon.png',
+                href: '/icon.png',
+            },
+            {
+                media: '(prefers-color-scheme: dark)',
+                url: '/icon-light.png',
+                href: '/icon-light.png',
+            },
+        ],
+    },
 };
 
 type RootLayoutProps = React.PropsWithChildren & {

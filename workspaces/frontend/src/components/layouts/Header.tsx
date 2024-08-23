@@ -36,7 +36,7 @@ export default function Header() {
     return (
         <div className="fixed z-50 flex h-14 w-full items-center justify-between bg-default px-4">
             <div className="flex items-center">
-                <Image src="/img/logo-white.png" alt="logo" width="32" height="32" />
+                <Image src="/img/logo-white.png" alt="logo" width="32" height="32" priority={true} />
                 <Divider type="vertical" className="ml-4 h-6 border-gray-500" />
             </div>
             <div className="h-full">

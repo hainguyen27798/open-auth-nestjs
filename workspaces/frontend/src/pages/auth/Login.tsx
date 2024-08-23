@@ -41,7 +41,7 @@ export default function Login() {
                 onFinish={onSubmit}
             >
                 <div className="mb-3 flex items-center justify-center gap-6">
-                    <Image src="/img/logo.png" width={60} height={60} alt="logo" />
+                    <Image src="/img/logo-dark.png" width={60} height={60} alt="logo" />
                     <div className="text-3xl font-semibold">Open Auth</div>
                 </div>
                 <div className="flex flex-col gap-2">

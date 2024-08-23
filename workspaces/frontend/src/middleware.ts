@@ -33,5 +33,5 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/', '/(en|vi)/:path*'],
+    matcher: ['/((?!api|_next|_vercel|.*\\..*).*)', '/', '/(en|vi)/:path*'],
 };
