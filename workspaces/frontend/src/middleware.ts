@@ -6,8 +6,8 @@ import createMiddleware from 'next-intl/middleware';
 
 import { CookiesKey, defaultLocale, locales } from '@/constants';
 
-const protectedRoutes = ['/'];
-const publicRoutes = ['/login'];
+const protectedRoutes = [/.*\/management\/.*/];
+const publicRoutes = [/.*\/login/];
 
 const intlMiddleware = createMiddleware({
     locales,
@@ -18,10 +18,15 @@ const regex = /^\/(en|vi)(.*)?$/;
 
 export default function middleware(request: NextRequest) {
     const pathsMatch = request.nextUrl?.pathname?.match(regex);
-    const path = _.get(pathsMatch, 2) || '/';
+    const path = request.nextUrl?.pathname;
     const locale = _.get(pathsMatch, 1);
-    const isProtectedRoute = protectedRoutes.includes(path);
-    const isPublicRoute = publicRoutes.includes(path);
+
+    if (/^\/(en|vi)$/.test(path)) {
+        return NextResponse.redirect(new URL(`/${_.get(pathsMatch, 1)}/management/users`, request.url));
+    }
+
+    const isProtectedRoute = protectedRoutes.some((permission) => permission.test(path));
+    const isPublicRoute = publicRoutes.some((permission) => permission.test(path));
 
     const accessToken = cookies().get(CookiesKey.refreshToken)?.value;
 
