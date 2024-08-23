@@ -28,7 +28,7 @@ export default function Navigation() {
                     <Link
                         href={item.route}
                         key={item.key}
-                        className="flex h-8 min-w-16 cursor-pointer items-center gap-2 px-[22px] text-default hover:text-violet-500"
+                        className="flex h-8 min-w-16 cursor-pointer items-center gap-2 px-[22px] text-default hover:text-indigo-500"
                     >
                         <div className="flex justify-center">{item.icon}</div>
                         <div className={`text-nowrap transition-opacity ${collapsed ? 'hidden opacity-0' : 'opacity'}`}>

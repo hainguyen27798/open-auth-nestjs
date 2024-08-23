@@ -15,8 +15,12 @@ export async function logoutAction() {
         };
     }
 
-    const { message, error } = await HttpClient.post('/v1/auth/logout', null, {
-        [HeaderKey.RefreshToken]: refreshToken,
+    const { message, error } = await HttpClient.post({
+        uri: '/v1/auth/logout',
+        body: null,
+        headers: {
+            [HeaderKey.RefreshToken]: refreshToken,
+        },
     });
 
     if (!error) {

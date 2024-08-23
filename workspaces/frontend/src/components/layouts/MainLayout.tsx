@@ -9,7 +9,9 @@ export default function MainLayout({ children }: React.PropsWithChildren) {
             <Header />
             <div className="flex w-full flex-1 pt-14">
                 <Navigation />
-                <div className="flex-1">{children}</div>
+                <div className="flex-1">
+                    <div className="container text-sm m-auto px-6 py-10">{children}</div>
+                </div>
             </div>
         </div>
     );

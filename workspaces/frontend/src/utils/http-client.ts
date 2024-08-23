@@ -1,3 +1,7 @@
+import { cookies } from 'next/headers';
+
+import { CookiesKey, HeaderKey } from '@/constants';
+
 const HOST = process.env.API_HOST;
 
 const headersInit: HeadersInit = {
@@ -5,15 +9,29 @@ const headersInit: HeadersInit = {
     'Content-Type': 'application/json',
 };
 
+type HttpOptions = {
+    uri: string;
+    body?: unknown;
+    headers?: HeadersInit;
+};
+
+type TResponse<T = unknown> = {
+    error: boolean;
+    message: string;
+    data: T;
+};
+
 export class HttpClient {
-    static async get(uri: string) {
-        return await fetch(`${HOST}${uri}`, {
-            headers: headersInit,
+    static async get<T = unknown>({ uri, headers }: HttpOptions): Promise<TResponse<T>> {
+        const rs = await fetch(`${HOST}${uri}`, {
+            headers: { ...headersInit, ...headers },
             method: 'GET',
         });
+
+        return await rs.json();
     }
 
-    static async post(uri: string, body: unknown, headers: HeadersInit = {}) {
+    static async post<T = unknown>({ uri, body, headers = {} }: HttpOptions): Promise<TResponse<T>> {
         const res = await fetch(`${HOST}${uri}`, {
             headers: { ...headersInit, ...headers },
             method: 'POST',
@@ -25,6 +43,7 @@ export class HttpClient {
             return {
                 error: true,
                 message: raw.message,
+                data: null as T,
             };
         }
 
@@ -34,4 +53,14 @@ export class HttpClient {
             data: raw.data,
         };
     }
+}
+
+export function withToken<T = unknown>(httpFunction: (args: HttpOptions) => Promise<TResponse<T>>) {
+    const accessToken = cookies().get(CookiesKey.refreshToken)?.value || '';
+    return (args: HttpOptions): Promise<TResponse<T>> => {
+        return httpFunction({
+            ...args,
+            headers: { ...args.headers, [HeaderKey.Authorization]: `Bearer ${accessToken}` },
+        });
+    };
 }
