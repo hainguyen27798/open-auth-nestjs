@@ -1,6 +1,6 @@
 const HOST = process.env.API_HOST;
 
-const headers: HeadersInit = {
+const headersInit: HeadersInit = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
 };
@@ -8,16 +8,16 @@ const headers: HeadersInit = {
 export class HttpClient {
     static async get(uri: string) {
         return await fetch(`${HOST}${uri}`, {
-            headers,
+            headers: headersInit,
             method: 'GET',
         });
     }
 
-    static async post(uri: string, body: unknown) {
+    static async post(uri: string, body: unknown, headers: HeadersInit = {}) {
         const res = await fetch(`${HOST}${uri}`, {
-            headers,
+            headers: { ...headersInit, ...headers },
             method: 'POST',
-            body: JSON.stringify(body),
+            body: body ? JSON.stringify(body) : null,
         });
         const raw = await res.json();
 

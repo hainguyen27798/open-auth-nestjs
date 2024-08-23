@@ -1,9 +1,11 @@
 import { Button } from 'antd';
 
+import { MainLayout } from '@/components/layouts';
+
 export default function HomePage() {
     return (
-        <div>
+        <MainLayout>
             <Button>abc</Button>
-        </div>
+        </MainLayout>
     );
 }
