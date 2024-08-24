@@ -4,14 +4,9 @@ import { Button } from 'antd';
 import { PlusIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
-import PermissionList from '@/pages/management/PermissionList';
-import type { Permission } from '@/types';
+import PermissionList from '@/components/pages/management/PermissionList';
 
-type PermissionManagementProps = {
-    permissions: Permission[];
-};
-
-export default function PermissionManagement({ permissions }: PermissionManagementProps) {
+export default function PermissionManagement() {
     const $t = useTranslations('permission');
     return (
         <>
@@ -26,7 +21,7 @@ export default function PermissionManagement({ permissions }: PermissionManageme
                 </Button>
             </div>
             <div className="mt-6 text-gray-500">{$t('description')}</div>
-            <PermissionList permissions={permissions} />
+            <PermissionList />
         </>
     );
 }

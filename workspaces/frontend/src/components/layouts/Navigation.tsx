@@ -31,7 +31,9 @@ export default function Navigation() {
                         className="flex h-8 min-w-16 cursor-pointer items-center gap-2 px-[22px] text-default hover:text-indigo-500"
                     >
                         <div className="flex justify-center">{item.icon}</div>
-                        <div className={`text-nowrap transition-opacity ${collapsed ? 'hidden opacity-0' : 'opacity'}`}>
+                        <div
+                            className={`text-nowrap transition-opacity ${collapsed ? 'hidden opacity-0' : 'opacity-100'}`}
+                        >
                             {item.label}
                         </div>
                     </Link>

@@ -1,12 +1,11 @@
 'use client';
 
-import {Table, TableProps} from 'antd';
+import type { TableProps } from 'antd';
+import { Table } from 'antd';
+import useSWR from 'swr';
 
+import { getPermissions } from '@/_actions/permission.action';
 import type { Permission } from '@/types';
-
-type PermissionListProps = {
-    permissions: Permission[];
-};
 
 const columns: TableProps<Permission>['columns'] = [
     {
@@ -24,8 +23,10 @@ const columns: TableProps<Permission>['columns'] = [
         dataIndex: 'attributes',
         key: 'attributes',
     },
-]
+];
 
-export default function PermissionList({ permissions }: PermissionListProps) {
-    return <Table columns={columns} dataSource={permissions} rowKey="id" />;
+export default function PermissionList() {
+    const { data } = useSWR({}, getPermissions);
+
+    return <Table columns={columns} dataSource={data} rowKey="id" />;
 }

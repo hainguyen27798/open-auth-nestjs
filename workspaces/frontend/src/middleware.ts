@@ -1,4 +1,3 @@
-import _ from 'lodash-es';
 import { cookies } from 'next/headers';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
@@ -19,10 +18,10 @@ const regex = /^\/(en|vi)(.*)?$/;
 export default function middleware(request: NextRequest) {
     const pathsMatch = request.nextUrl?.pathname?.match(regex);
     const path = request.nextUrl?.pathname;
-    const locale = _.get(pathsMatch, 1);
+    const locale = pathsMatch?.[1];
 
     if (/^\/(en|vi)$/.test(path)) {
-        return NextResponse.redirect(new URL(`/${_.get(pathsMatch, 1)}/management/users`, request.url));
+        return NextResponse.redirect(new URL(`/${locale}/management/users`, request.url));
     }
 
     const isProtectedRoute = protectedRoutes.some((permission) => permission.test(path));
@@ -31,7 +30,7 @@ export default function middleware(request: NextRequest) {
     const accessToken = cookies().get(CookiesKey.refreshToken)?.value;
 
     if (isProtectedRoute && !isPublicRoute && locale && !accessToken) {
-        return NextResponse.redirect(new URL(`/${_.get(pathsMatch, 1)}/login`, request.url));
+        return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
     }
 
     return intlMiddleware(request);

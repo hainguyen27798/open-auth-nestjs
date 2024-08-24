@@ -3,7 +3,7 @@
 import { App, Button, Form, type FormProps, Input } from 'antd';
 import Image from 'next/image';
 
-import { loginAction } from '@/actions/login.action';
+import { loginAction } from '@/_actions/login.action';
 import { useRouter } from '@/navigation';
 
 type FieldType = {

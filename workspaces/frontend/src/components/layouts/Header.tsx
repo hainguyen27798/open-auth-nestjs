@@ -6,7 +6,7 @@ import { Avatar, Divider, Dropdown } from 'antd';
 import { LogOut, UserRound } from 'lucide-react';
 import Image from 'next/image';
 
-import { logoutAction } from '@/actions/logout.action';
+import { logoutAction } from '@/_actions/logout.action';
 import { Link } from '@/navigation';
 
 export default function Header() {
