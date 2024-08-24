@@ -2,7 +2,7 @@
 
 import type { TableProps } from 'antd';
 import { Table } from 'antd';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 import { getPermissions } from '@/_actions/permission.action';
 import type { Permission } from '@/types';
@@ -26,7 +26,7 @@ const columns: TableProps<Permission>['columns'] = [
 ];
 
 export default function PermissionList() {
-    const { data } = useSWR({}, getPermissions);
+    const { data } = useSWRImmutable({}, getPermissions);
 
     return <Table columns={columns} dataSource={data} rowKey="id" />;
 }
