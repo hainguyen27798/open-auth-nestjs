@@ -9,6 +9,7 @@ import { getMessages } from 'next-intl/server';
 import React from 'react';
 
 import StyledComponentsRegistry from '@/lib/registry';
+import Session from '@/lib/session';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -38,9 +39,18 @@ type RootLayoutProps = React.PropsWithChildren & {
 export default async function RootLayout({ children, params: { locale } }: Readonly<RootLayoutProps>) {
     const messages = await getMessages();
 
+    await fetch('http://localhost:3000/api/session', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    });
+
     return (
         <html lang={locale}>
             <body className={inter.className} suppressHydrationWarning>
+                <Session />
                 <NextIntlClientProvider messages={messages} locale={locale}>
                     <StyledComponentsRegistry>
                         <AntdRegistry>
