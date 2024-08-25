@@ -1,4 +1,8 @@
 {
+    "dashboard_filter": {
+        "search_by": "Search By",
+        "reset_btn": "Reset"
+    },
     "role": {
         "title": "Roles",
         "description": "An easy to use UI to help administrators manage user identities including password resets, creating and provisioning, blocking and deleting users.",
@@ -7,6 +11,7 @@
     "permission": {
         "title": "Permissions",
         "description": "An easy to use UI to help administrators manage access permissions including creating and editing, deleting permissions.",
-        "create_permission": "Create Permission"
+        "create_permission": "Create Permission",
+        "search_for": "Search for permissions"
     }
 }

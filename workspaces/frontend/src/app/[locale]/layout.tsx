@@ -47,7 +47,9 @@ export default async function RootLayout({ children, params: { locale } }: Reado
                             <ConfigProvider
                                 theme={{
                                     token: {
-                                        colorPrimary: '#6c757d',
+                                        colorPrimary: '#6366f1',
+                                        colorBorder: '#6b7280',
+                                        colorText: '#191919',
                                     },
                                 }}
                             >

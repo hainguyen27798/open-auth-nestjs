@@ -14,6 +14,11 @@ const columns: TableProps<Permission>['columns'] = [
         key: 'serviceName',
     },
     {
+        title: 'Resource',
+        dataIndex: 'resource',
+        key: 'resource',
+    },
+    {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
