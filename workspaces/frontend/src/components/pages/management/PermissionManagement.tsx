@@ -4,7 +4,9 @@ import { Button } from 'antd';
 import { PlusIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { DefaultOptionType } from 'rc-select/es/Select';
+import { useState } from 'react';
 
+import PermissionEditor from '@/components/pages/management/PermissionEditor';
 import PermissionList from '@/components/pages/management/PermissionList';
 import { DashboardFilter } from '@/components/ui';
 
@@ -29,6 +31,8 @@ const searchByOptions: DefaultOptionType[] = [
 
 export default function PermissionManagement() {
     const $t = useTranslations('permission');
+    const [isPermissionEditorOpen, setIsPermissionEditorOpen] = useState<boolean>(false);
+
     return (
         <>
             <div className="flex w-full items-center justify-between">
@@ -37,6 +41,7 @@ export default function PermissionManagement() {
                     size="large"
                     className="!border-indigo-500 !bg-indigo-500 text-sm !text-white"
                     icon={<PlusIcon size={18} />}
+                    onClick={() => setIsPermissionEditorOpen(true)}
                 >
                     {$t('create_permission')}
                 </Button>
@@ -52,6 +57,7 @@ export default function PermissionManagement() {
                     <PermissionList />
                 </div>
             </div>
+            <PermissionEditor isOpen={isPermissionEditorOpen} close={() => setIsPermissionEditorOpen(false)} />
         </>
     );
 }

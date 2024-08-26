@@ -15,7 +15,15 @@ const intlMiddleware = createMiddleware({
 
 const regex = /^\/(en|vi)(.*)?$/;
 
-export default function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
+    await fetch('http://localhost:3000/api/session', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    });
+
     const pathsMatch = request.nextUrl?.pathname?.match(regex);
     const path = request.nextUrl?.pathname;
     const locale = pathsMatch?.[1];
