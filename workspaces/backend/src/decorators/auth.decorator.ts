@@ -10,7 +10,7 @@ import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Request } from 'express';
-import { find } from 'lodash';
+import { find, snakeCase } from 'lodash';
 
 import { GRANT_OPERATION_METHOD } from '@/modules/role/constants/grant';
 import { TAuthUser } from '@/types';
@@ -30,7 +30,7 @@ class JwtGuard extends AuthGuard('jwt') {
         const hasPermission = find(user.permissions, (permission) => matchWithPermission(routePermission, permission));
 
         if (!hasPermission) {
-            throw err || new ForbiddenException();
+            throw new ForbiddenException(snakeCase(_info.message));
         }
 
         return user;

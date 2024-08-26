@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+    --color-bg: #f8f9fa;
+    --color-primary: #495057;
+    --color-default: #191919;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+    }
+}
+
+body {
+    background: var(--color-bg);
+}
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+}
