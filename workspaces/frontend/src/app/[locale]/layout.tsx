@@ -10,6 +10,7 @@ import React from 'react';
 
 import { theme } from '@/configs';
 import StyledComponentsRegistry from '@/lib/registry';
+import StoreProvider from '@/lib/store/StoreProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -46,7 +47,9 @@ export default async function RootLayout({ children, params: { locale } }: Reado
                     <StyledComponentsRegistry>
                         <AntdRegistry>
                             <ConfigProvider theme={theme}>
-                                <App>{children}</App>
+                                <StoreProvider>
+                                    <App>{children}</App>
+                                </StoreProvider>
                             </ConfigProvider>
                         </AntdRegistry>
                     </StyledComponentsRegistry>
