@@ -54,6 +54,21 @@ export class HttpClient {
         };
     }
 
+    static async patch<T = unknown>({ uri, body, headers = {} }: HttpOptions): Promise<TResponse<T>> {
+        const res = await fetch(`${HOST}${uri}`, {
+            headers: { ...headersInit, ...headers },
+            method: 'PATCH',
+            body: body ? JSON.stringify(body) : null,
+        });
+        const raw = await res.json();
+
+        return {
+            error: res.status !== 200,
+            message: raw.message,
+            data: raw.data,
+        };
+    }
+
     static async delete<T = unknown>({ uri, body, headers = {} }: HttpOptions): Promise<TResponse<T>> {
         const res = await fetch(`${HOST}${uri}`, {
             headers: { ...headersInit, ...headers },

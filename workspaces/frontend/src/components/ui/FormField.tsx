@@ -7,12 +7,26 @@ type FormFieldProps<T> = {
     placeholder?: string;
     rules?: Rule[];
     title?: string;
+    defaultValue?: string | number;
+    disable?: boolean;
 };
 
-export default function FormField<T = any>({ name, rules = [], label, placeholder }: FormFieldProps<T>) {
+export default function FormField<T = any>({
+    name,
+    rules = [],
+    label,
+    placeholder,
+    defaultValue,
+    disable = false,
+}: FormFieldProps<T>) {
     return (
-        <Form.Item<T> name={name as any} label={<span className="font-medium">{label}</span>} rules={rules}>
-            <Input placeholder={placeholder || label} className="px-4" />
+        <Form.Item<T>
+            initialValue={defaultValue}
+            name={name as any}
+            label={<span className="font-medium">{label}</span>}
+            rules={rules}
+        >
+            <Input disabled={disable} placeholder={placeholder || label} className="px-4" />
         </Form.Item>
     );
 }

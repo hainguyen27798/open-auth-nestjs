@@ -7,4 +7,5 @@ export type Permission = {
     description?: string;
 };
 
-export type CreatePermission = Omit<Permission, 'id'>;
+export type CreatePermissionDto = Omit<Permission, 'id'>;
+export type UpdatePermissionDto = Omit<Permission, 'id' | 'serviceName' | 'resource'>;

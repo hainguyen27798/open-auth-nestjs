@@ -15,12 +15,14 @@
         "search_for": "Search for permissions",
         "form": {
             "title": "Create Permission",
+            "title_edit": "Edit Permission",
             "serviceName": "Service Name",
             "resource": "Resource",
             "action": "Action",
             "attributes": "Attributes",
             "description": "Description",
-            "create_btn": "Create"
+            "create_btn": "Create",
+            "save_btn": "Save"
         },
         "table": {
             "serviceName": "Service Name",
