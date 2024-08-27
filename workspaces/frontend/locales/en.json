@@ -12,6 +12,15 @@
         "title": "Permissions",
         "description": "An easy to use UI to help administrators manage access permissions including creating and editing, deleting permissions.",
         "create_permission": "Create Permission",
-        "search_for": "Search for permissions"
+        "search_for": "Search for permissions",
+        "form": {
+            "title": "Create Permission",
+            "serviceName": "Service Name",
+            "resource": "Resource",
+            "action": "Action",
+            "attributes": "Attributes",
+            "description": "Description",
+            "create_btn": "Create"
+        }
     }
 }

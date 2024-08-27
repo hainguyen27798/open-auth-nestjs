@@ -5,6 +5,8 @@ import { Table } from 'antd';
 import useSWRImmutable from 'swr/immutable';
 
 import { getPermissions } from '@/_actions/permission.action';
+import { useAppSelector } from '@/lib/store/hook';
+import { selectReloadPermission } from '@/lib/store/reducers/permission.reducer';
 import type { Permission } from '@/types';
 
 const columns: TableProps<Permission>['columns'] = [
@@ -31,7 +33,8 @@ const columns: TableProps<Permission>['columns'] = [
 ];
 
 export default function PermissionList() {
-    const { data } = useSWRImmutable({}, getPermissions);
+    const reload = useAppSelector(selectReloadPermission);
+    const { data } = useSWRImmutable({ reload }, getPermissions);
 
     return <Table columns={columns} dataSource={data} rowKey="id" />;
 }

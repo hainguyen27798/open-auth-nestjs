@@ -5,6 +5,7 @@ export const theme: ThemeConfig = {
         colorPrimary: '#6366f1',
         colorBorder: '#6b7280',
         colorText: '#191919',
+        controlHeight: 36,
     },
     components: {
         Table: {

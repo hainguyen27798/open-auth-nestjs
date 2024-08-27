@@ -46,10 +46,10 @@ export default function Login() {
                 </div>
                 <div className="flex flex-col gap-2">
                     <Form.Item<FieldType> name="email" rules={[{ required: true }]}>
-                        <Input size="large" placeholder="Email" className="px-4" />
+                        <Input placeholder="Email" className="px-4" />
                     </Form.Item>
                     <Form.Item<FieldType> name="password" rules={[{ required: true }]}>
-                        <Input.Password size="large" placeholder="Password" className="px-4" />
+                        <Input.Password placeholder="Password" className="px-4" />
                     </Form.Item>
                 </div>
                 <Button size="large" className="w-full shadow-none" type="primary" htmlType="submit">

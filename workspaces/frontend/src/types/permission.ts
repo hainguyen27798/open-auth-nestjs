@@ -6,3 +6,5 @@ export type Permission = {
     attributes: string;
     description?: string;
 };
+
+export type CreatePermission = Omit<Permission, 'id'>;
