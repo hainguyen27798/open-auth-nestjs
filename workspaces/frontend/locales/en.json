@@ -21,6 +21,14 @@
             "attributes": "Attributes",
             "description": "Description",
             "create_btn": "Create"
+        },
+        "table": {
+            "serviceName": "Service Name",
+            "resource": "Resource",
+            "action": "Action",
+            "attributes": "Attributes",
+            "confirm_delete": "Are your sure delete permission?",
+            "delete_btn": "Delete"
         }
     }
 }

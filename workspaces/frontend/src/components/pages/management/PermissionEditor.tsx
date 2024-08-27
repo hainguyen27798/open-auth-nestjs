@@ -5,7 +5,7 @@ import { X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useCallback, useMemo, useState } from 'react';
 
-import { createNewPermission } from '@/_actions/create-permission.action';
+import { createNewPermission } from '@/_actions/permission.action';
 import { FormField } from '@/components/ui';
 import { useAppDispatch } from '@/lib/store/hook';
 import { reloadPermissionAction } from '@/lib/store/reducers/permission.reducer';
