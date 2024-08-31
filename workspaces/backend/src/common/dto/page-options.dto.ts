@@ -1,9 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
 import { Order } from '@/constants';
 
 export class PageOptionsDto {
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    readonly search: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    readonly by: string;
+
     @ApiProperty({ enum: Order })
     @IsEnum(Order)
     @IsOptional()
@@ -11,11 +22,13 @@ export class PageOptionsDto {
 
     @ApiProperty()
     @IsInt()
+    @Transform(({ value }) => Number(value))
     @Min(1)
     readonly page: number = 1;
 
     @ApiProperty()
     @IsInt()
+    @Transform(({ value }) => Number(value))
     @Min(1)
     @Max(50)
     readonly take: number = 10;

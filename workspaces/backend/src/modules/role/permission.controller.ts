@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Query, ValidationPipe } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+import { PageOptionsDto } from '@/common';
 import { ApiDataResponse, Auth, UUIDParam } from '@/decorators';
 import { CreatePermissionDto, PermissionDto, UpdatePermissionDto } from '@/modules/role/dto';
 import { PermissionService } from '@/modules/role/permission.service';
@@ -17,15 +18,14 @@ export class PermissionController {
         type: PermissionDto,
         isArray: true,
     })
-    getAll() {
-        return this._PermissionService.getAll();
+    getAll(@Query(new ValidationPipe({ transform: true })) pageOption: PageOptionsDto) {
+        return this._PermissionService.getAll(pageOption);
     }
 
     @Get(':id')
     @ApiOperation({ description: 'Get permissions' })
     @ApiDataResponse({
         type: PermissionDto,
-        isArray: true,
     })
     getById(@UUIDParam() id: UUID) {
         return this._PermissionService.getById(id);
