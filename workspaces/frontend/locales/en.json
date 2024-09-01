@@ -32,5 +32,25 @@
             "confirm_delete": "Are your sure delete permission?",
             "delete_btn": "Delete"
         }
+    },
+    "roles": {
+        "title": "Roles",
+        "description": "Create and manage Roles for your applications. Roles contain collections of Permissions and can be assigned to Users.",
+        "create_role": "Create Role",
+        "search_for": "Search for roles",
+        "form": {
+            "title": "Create Role",
+            "title_edit": "Edit Role",
+            "name": "Name",
+            "description": "Description",
+            "create_btn": "Create",
+            "save_btn": "Save"
+        },
+        "table": {
+            "name": "Name",
+            "description": "Description",
+            "confirm_delete": "Are your sure delete role?",
+            "delete_btn": "Delete"
+        }
     }
 }

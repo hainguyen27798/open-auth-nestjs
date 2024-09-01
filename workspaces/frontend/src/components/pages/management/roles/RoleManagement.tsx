@@ -6,34 +6,26 @@ import { useTranslations } from 'next-intl';
 import type { DefaultOptionType } from 'rc-select/es/Select';
 import { useState } from 'react';
 
-import PermissionEditor from '@/components/pages/management/permission/PermissionEditor';
-import PermissionList from '@/components/pages/management/permission/PermissionList';
+import RoleEditor from '@/components/pages/management/roles/RoleEditor';
+import RoleList from '@/components/pages/management/roles/RoleList';
 import { DashboardFilter } from '@/components/ui';
 import { useAppDispatch } from '@/lib/store/hook';
-import { changeSearchPermissionAction } from '@/lib/store/slices';
+import { changeSearchRoleAction } from '@/lib/store/slices';
 
 const searchByOptions: DefaultOptionType[] = [
     {
-        label: 'Service Name',
-        value: 'serviceName',
+        label: 'Name',
+        value: 'name',
     },
     {
-        label: 'Resource',
-        value: 'resource',
-    },
-    {
-        label: 'Action',
-        value: 'action',
-    },
-    {
-        label: 'Attributes',
-        value: 'attributes',
+        label: 'Description',
+        value: 'description',
     },
 ];
 
-export default function PermissionManagement() {
-    const $t = useTranslations('permission');
-    const [isPermissionEditorOpen, setIsPermissionEditorOpen] = useState<boolean>(false);
+export default function RoleManagement() {
+    const $t = useTranslations('roles');
+    const [isRoleEditorOpen, setIsRoleEditorOpen] = useState<boolean>(false);
     const dispatch = useAppDispatch();
 
     return (
@@ -43,24 +35,24 @@ export default function PermissionManagement() {
                 <Button
                     className="!border-indigo-500 !bg-indigo-500 text-sm !text-white"
                     icon={<PlusIcon size={18} />}
-                    onClick={() => setIsPermissionEditorOpen(true)}
+                    onClick={() => setIsRoleEditorOpen(true)}
                 >
-                    {$t('create_permission')}
+                    {$t('create_role')}
                 </Button>
             </div>
             <div className="mt-6 text-gray-500">{$t('description')}</div>
             <div className="mt-10">
                 <DashboardFilter
                     searchByOptions={searchByOptions}
-                    defaultSearchBy="resource"
+                    defaultSearchBy="name"
                     searchPlaceholder={$t('search_for')}
-                    filterChange={(value) => dispatch(changeSearchPermissionAction(value))}
+                    filterChange={(value) => dispatch(changeSearchRoleAction(value))}
                 />
                 <div className="mt-6">
-                    <PermissionList />
+                    <RoleList />
                 </div>
             </div>
-            <PermissionEditor isOpen={isPermissionEditorOpen} close={() => setIsPermissionEditorOpen(false)} />
+            <RoleEditor isOpen={isRoleEditorOpen} close={() => setIsRoleEditorOpen(false)} />
         </>
     );
 }

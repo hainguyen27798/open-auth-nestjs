@@ -8,7 +8,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { createPermission, updatePermission } from '@/_actions/permission.action';
 import { FormField } from '@/components/ui';
 import { useAppDispatch } from '@/lib/store/hook';
-import { changeSearchPermissionAction } from '@/lib/store/reducers/permission.reducer';
+import { changeSearchPermissionAction } from '@/lib/store/slices';
 import type { CreatePermissionDto, Permission } from '@/types';
 
 type PermissionEditorProps = {
