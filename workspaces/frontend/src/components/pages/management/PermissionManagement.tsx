@@ -9,11 +9,13 @@ import { useState } from 'react';
 import PermissionEditor from '@/components/pages/management/PermissionEditor';
 import PermissionList from '@/components/pages/management/PermissionList';
 import { DashboardFilter } from '@/components/ui';
+import { useAppDispatch } from '@/lib/store/hook';
+import { changeSearchPermissionAction } from '@/lib/store/reducers/permission.reducer';
 
 const searchByOptions: DefaultOptionType[] = [
     {
-        label: 'Server Name',
-        value: 'serverName',
+        label: 'Service Name',
+        value: 'serviceName',
     },
     {
         label: 'Resource',
@@ -32,6 +34,7 @@ const searchByOptions: DefaultOptionType[] = [
 export default function PermissionManagement() {
     const $t = useTranslations('permission');
     const [isPermissionEditorOpen, setIsPermissionEditorOpen] = useState<boolean>(false);
+    const dispatch = useAppDispatch();
 
     return (
         <>
@@ -51,6 +54,7 @@ export default function PermissionManagement() {
                     searchByOptions={searchByOptions}
                     defaultSearchBy="resource"
                     searchPlaceholder={$t('search_for')}
+                    filterChange={(value) => dispatch(changeSearchPermissionAction(value))}
                 />
                 <div className="mt-6">
                     <PermissionList />

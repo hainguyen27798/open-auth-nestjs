@@ -1,11 +1,11 @@
 'use server';
 
-import type { CreatePermissionDto, Permission, UpdatePermissionDto } from '@/types';
+import type { CreatePermissionDto, InputSearchDto, Permission, UpdatePermissionDto } from '@/types';
 import { HttpClient, withToken } from '@/utils';
 
-export async function getPermissions() {
+export async function getPermissions({ search = '', by = '' }: InputSearchDto) {
     const rs = await withToken<Permission[]>(HttpClient.get)({
-        uri: '/v1/role-permissions',
+        uri: `/v1/role-permissions?search=${search}&by=${by}`,
     });
     return rs.data;
 }
