@@ -1,8 +1,8 @@
 import { BadRequestException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager, FindOptionsWhere, Like, Repository } from 'typeorm';
 
-import { SuccessDto } from '@/common';
+import { PageOptionsDto, SuccessDto } from '@/common';
 import { SUPERUSER } from '@/constants';
 import { CreateRoleDto, UpdateRoleDto } from '@/modules/role/dto';
 import { Permission } from '@/modules/role/entities/permission.entity';
@@ -59,6 +59,25 @@ export class RoleService {
         }
 
         return new SuccessDto(null, HttpStatus.OK, role.toDto());
+    }
+
+    async getAll(pageOption: PageOptionsDto) {
+        const where: FindOptionsWhere<Role> = {};
+
+        if (pageOption.by) {
+            where[pageOption.by] = Like(`%${pageOption.search}%`);
+        }
+
+        const [roles, total] = await this._RoleRepository.findAndCount({
+            where,
+            take: pageOption.take,
+            skip: pageOption.skip,
+        });
+
+        return new SuccessDto(null, HttpStatus.OK, {
+            data: roles.toDtos(),
+            metadata: { total },
+        });
     }
 
     async create(payload: CreateRoleDto) {
