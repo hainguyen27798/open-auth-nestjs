@@ -5,20 +5,27 @@ import type { RootState } from '@/lib/store/store';
 export const permissionSlice = createSlice({
     name: 'permission',
     initialState: {
-        reload: 0,
+        searchPermissionStatue: {
+            reload: 0,
+            search: '',
+            by: '',
+        },
     },
     reducers: {
-        reloadPermissionAction: (state) => {
+        changeSearchPermissionAction: (state, action) => {
             return {
                 ...state,
-                reload: Date.now(),
+                searchPermissionStatue: {
+                    ...state.searchPermissionStatue,
+                    ...action.payload,
+                },
             };
         },
     },
 });
 
-export const { reloadPermissionAction } = permissionSlice.actions;
+export const { changeSearchPermissionAction } = permissionSlice.actions;
 
-export const selectReloadPermission = (state: RootState) => state.permission.reload;
+export const selectSearchPermissionState = (state: RootState) => state.permission.searchPermissionStatue;
 
 export default permissionSlice.reducer;
