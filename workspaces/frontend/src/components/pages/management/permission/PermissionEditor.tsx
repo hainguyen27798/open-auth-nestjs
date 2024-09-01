@@ -8,7 +8,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { createPermission, updatePermission } from '@/_actions/permission.action';
 import { FormField } from '@/components/ui';
 import { useAppDispatch } from '@/lib/store/hook';
-import { reloadPermissionAction } from '@/lib/store/reducers/permission.reducer';
+import { changeSearchPermissionAction } from '@/lib/store/reducers/permission.reducer';
 import type { CreatePermissionDto, Permission } from '@/types';
 
 type PermissionEditorProps = {
@@ -64,7 +64,7 @@ export default function PermissionEditor({ isOpen = false, close, permission }: 
                     message: rs.message,
                     showProgress: true,
                 });
-                dispatch(reloadPermissionAction());
+                dispatch(changeSearchPermissionAction({ reload: Date.now() }));
                 onClose();
             }
         });

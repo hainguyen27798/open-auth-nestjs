@@ -7,14 +7,14 @@ import { useState } from 'react';
 import useSWRImmutable from 'swr/immutable';
 
 import { deletePermission, getPermissions } from '@/_actions/permission.action';
-import PermissionEditor from '@/components/pages/management/PermissionEditor';
+import PermissionEditor from '@/components/pages/management/permission/PermissionEditor';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hook';
-import { reloadPermissionAction, selectReloadPermission } from '@/lib/store/reducers/permission.reducer';
+import { changeSearchPermissionAction, selectSearchPermissionState } from '@/lib/store/reducers/permission.reducer';
 import type { Permission } from '@/types';
 
 export default function PermissionList() {
-    const reload = useAppSelector(selectReloadPermission);
-    const { data } = useSWRImmutable({ reload }, getPermissions);
+    const searchState = useAppSelector(selectSearchPermissionState);
+    const { data } = useSWRImmutable(searchState, getPermissions);
     const $t = useTranslations('permission.table');
     const { notification, modal } = App.useApp();
     const dispatch = useAppDispatch();
@@ -38,7 +38,7 @@ export default function PermissionList() {
                         message: rs.message,
                         showProgress: true,
                     });
-                    dispatch(reloadPermissionAction());
+                    dispatch(changeSearchPermissionAction({ reload: Date.now() }));
                 }
             },
         });
