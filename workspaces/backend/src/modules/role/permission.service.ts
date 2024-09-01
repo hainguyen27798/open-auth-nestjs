@@ -1,8 +1,8 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
 
-import { SuccessDto } from '@/common';
+import { PageOptionsDto, SuccessDto } from '@/common';
 import { GRANT_ALL_SERVICE, GRANT_ANY, GRANT_ANY_ATTRIBUTES, GRANT_OPERATION } from '@/modules/role/constants/grant';
 import { CreatePermissionDto, UpdatePermissionDto } from '@/modules/role/dto';
 import { Permission } from '@/modules/role/entities/permission.entity';
@@ -20,9 +20,23 @@ export class PermissionService {
         });
     }
 
-    async getAll() {
-        const permissions = await this._PermissionRepository.find();
-        return new SuccessDto(null, HttpStatus.OK, permissions.toDtos());
+    async getAll(pageOption: PageOptionsDto) {
+        const where: FindOptionsWhere<Permission> = {};
+
+        if (pageOption.by) {
+            where[pageOption.by] = Like(`%${pageOption.search}%`);
+        }
+
+        const [permissions, total] = await this._PermissionRepository.findAndCount({
+            where,
+            take: pageOption.take,
+            skip: pageOption.skip,
+        });
+
+        return new SuccessDto(null, HttpStatus.OK, {
+            data: permissions.toDtos(),
+            metadata: { total },
+        });
     }
 
     async getById(id: UUID) {

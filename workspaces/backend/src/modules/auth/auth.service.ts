@@ -90,7 +90,7 @@ export class AuthService {
         } catch (e) {
             Logger.error(e.toString());
             // remove token
-            await this.removeToken(RemoveTokenByKey.session, userPayload.session);
+            await this.removeToken(RemoveTokenByKey.refreshToken, refreshToken);
             throw new ForbiddenException('token_is_expired_or_invalid');
         }
 

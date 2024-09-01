@@ -1,7 +1,7 @@
 import { applyDecorators, Type } from '@nestjs/common';
 import { ApiExtraModels, ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
 
-import { ResponseDto } from '@/common';
+import { ResponseDto, ResponsePaginationDto } from '@/common';
 
 type TApiDataResponse = {
     type?: Type<unknown>;
@@ -10,8 +10,8 @@ type TApiDataResponse = {
 };
 
 export const ApiDataResponse = ({ type, isArray, description }: TApiDataResponse) => {
-    const decorators = [ApiExtraModels(ResponseDto)];
-    const allOf: unknown[] = [{ $ref: getSchemaPath(ResponseDto) }];
+    const decorators = [ApiExtraModels(isArray ? ResponsePaginationDto : ResponseDto)];
+    const allOf: unknown[] = [{ $ref: getSchemaPath(isArray ? ResponsePaginationDto : ResponseDto) }];
 
     if (type) {
         decorators.push(ApiExtraModels(type));
