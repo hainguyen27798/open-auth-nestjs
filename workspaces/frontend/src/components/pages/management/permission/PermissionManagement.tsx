@@ -6,8 +6,8 @@ import { useTranslations } from 'next-intl';
 import type { DefaultOptionType } from 'rc-select/es/Select';
 import { useState } from 'react';
 
-import PermissionEditor from '@/components/pages/management/PermissionEditor';
-import PermissionList from '@/components/pages/management/PermissionList';
+import PermissionEditor from '@/components/pages/management/permission/PermissionEditor';
+import PermissionList from '@/components/pages/management/permission/PermissionList';
 import { DashboardFilter } from '@/components/ui';
 import { useAppDispatch } from '@/lib/store/hook';
 import { changeSearchPermissionAction } from '@/lib/store/reducers/permission.reducer';

@@ -7,7 +7,7 @@ import { useState } from 'react';
 import useSWRImmutable from 'swr/immutable';
 
 import { deletePermission, getPermissions } from '@/_actions/permission.action';
-import PermissionEditor from '@/components/pages/management/PermissionEditor';
+import PermissionEditor from '@/components/pages/management/permission/PermissionEditor';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hook';
 import { changeSearchPermissionAction, selectSearchPermissionState } from '@/lib/store/reducers/permission.reducer';
 import type { Permission } from '@/types';
