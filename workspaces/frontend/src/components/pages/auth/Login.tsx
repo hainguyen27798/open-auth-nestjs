@@ -2,6 +2,7 @@
 
 import { App, Button, Form, type FormProps, Input } from 'antd';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 import { loginAction } from '@/_actions/login.action';
 import { useRouter } from '@/navigation';
@@ -12,6 +13,7 @@ type FieldType = {
 };
 
 export default function Login() {
+    const $t = useTranslations('auth');
     const { notification } = App.useApp();
     const router = useRouter();
 
@@ -26,7 +28,7 @@ export default function Login() {
                 } else {
                     router.push('/');
                     notification.success({
-                        message: rs.message,
+                        message: $t('login_success'),
                         showProgress: true,
                     });
                 }

@@ -1,4 +1,8 @@
 {
+    "auth": {
+        "login_success": "Login successfully",
+        "logout_success": "Logout successfully"
+    },
     "dashboard_filter": {
         "search_by": "Search By",
         "reset_btn": "Reset"
