@@ -10,6 +10,13 @@ export async function getRoles({ search = '', by = '' }: InputSearchDto) {
     return rs.data;
 }
 
+export async function getRole(id: string) {
+    const rs = await withToken<Role>(HttpClient.get)({
+        uri: `/v1/roles/${id}`,
+    });
+    return rs.data;
+}
+
 export async function createRole(form: CreateRoleDto) {
     const rs = await withToken<Role[]>(HttpClient.post)({
         uri: '/v1/roles',

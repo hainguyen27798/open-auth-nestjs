@@ -20,6 +20,10 @@ export const theme: ThemeConfig = {
             paddingBlock: 4,
             paddingXXS: 6,
             controlPaddingHorizontal: 8,
+        },
+        Tabs: {
+            colorBorderSecondary: '#e5e7eb',
+            colorText: '#6b7280',
         }
     },
 };

@@ -61,7 +61,7 @@ export default function RoleList() {
     };
 
     const viewDetails = (id: string) => {
-        router.push(`roles/${id}`);
+        router.push(`roles/${id}/settings`);
     };
 
     return (
@@ -95,6 +95,9 @@ export default function RoleList() {
                                         switch (key) {
                                             case 'delete_role':
                                                 deleteAction(id);
+                                                break;
+                                            case 'view_role_details':
+                                                viewDetails(id)
                                                 break;
                                             default:
                                                 break;

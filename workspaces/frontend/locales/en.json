@@ -59,6 +59,15 @@
                 "view_details": "View Details",
                 "delete": "Delete"
             }
+        },
+        "details": {
+            "back_btn": "Back to Roles",
+            "role_id": "Role ID",
+            "tabs": {
+                "settings": "Settings",
+                "permissions": "Permissions",
+                "users": "Users"
+            }
         }
     }
 }

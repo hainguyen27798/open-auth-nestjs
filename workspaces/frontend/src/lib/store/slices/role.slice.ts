@@ -11,6 +11,7 @@ export const roleSlice = createSlice({
             search: '',
             by: '',
         },
+        currentRole: null,
     },
     reducers: {
         changeSearchRoleAction: (state, action) => {
