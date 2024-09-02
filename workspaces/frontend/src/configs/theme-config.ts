@@ -1,18 +1,30 @@
 import type { ThemeConfig } from 'antd';
+import colors from 'tailwindcss/colors';
 
 export const theme: ThemeConfig = {
     token: {
-        colorPrimary: '#6366f1',
-        colorBorder: '#6b7280',
-        colorText: '#191919',
+        colorBgContainer: colors.white,
+        colorPrimary: colors.indigo['500'],
+        colorBorder: colors.gray['400'],
+        colorText: colors.slate['800'],
         controlHeight: 36,
+        colorError: colors.red['700'],
+        colorErrorTextActive: colors.red['700'],
+        colorBorderSecondary: colors.gray['300'],
     },
     components: {
         Table: {
             headerBg: 'transparent',
             headerSplitColor: 'transparent',
             colorBgContainer: 'transparent',
-            borderColor: '#d1d5db',
+        },
+        Dropdown: {
+            paddingBlock: 4,
+            paddingXXS: 6,
+            controlPaddingHorizontal: 8,
+        },
+        Tabs: {
+            colorText: colors.gray['500'],
         },
     },
 };

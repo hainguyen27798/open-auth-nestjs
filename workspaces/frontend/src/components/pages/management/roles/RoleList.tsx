@@ -1,24 +1,40 @@
 'use client';
 
-import { App, Button, Dropdown, type MenuProps, Table } from 'antd';
-import { Ellipsis, PencilLine, Trash } from 'lucide-react';
+import type { MenuProps } from 'antd';
+import { App, Button, Dropdown, Table } from 'antd';
+import { Ellipsis, Trash } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
 import useSWRImmutable from 'swr/immutable';
 
-import { deletePermission, getPermissions } from '@/_actions/permission.action';
-import PermissionEditor from '@/components/pages/management/permission/PermissionEditor';
+import { deleteRole, getRoles } from '@/_actions/role.action';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hook';
-import { changeSearchPermissionAction, selectSearchPermissionState } from '@/lib/store/slices';
+import { changeSearchRoleAction, selectSearchRoleState } from '@/lib/store/slices';
+import { useRouter } from '@/navigation';
 import type { Permission } from '@/types';
 
-export default function PermissionList() {
-    const searchState = useAppSelector(selectSearchPermissionState);
-    const { data, isLoading } = useSWRImmutable(searchState, getPermissions);
-    const $t = useTranslations('permission.table');
+export default function RoleList() {
+    const searchState = useAppSelector(selectSearchRoleState);
+    const { data, isLoading } = useSWRImmutable(searchState, getRoles, { revalidateOnMount: true });
+    const $t = useTranslations('roles.table');
     const { notification, modal } = App.useApp();
     const dispatch = useAppDispatch();
-    const [permission, setPermission] = useState<Permission | undefined>(undefined);
+    const router = useRouter();
+
+    const actionItems: MenuProps['items'] = [
+        {
+            label: $t('actions.view_details'),
+            key: 'view_role_details',
+        },
+        {
+            type: 'divider',
+        },
+        {
+            label: $t('actions.delete'),
+            danger: true,
+            key: 'delete_role',
+            icon: <Trash size={16} />,
+        },
+    ];
 
     const deleteAction = (id: string) => {
         modal.confirm({
@@ -26,7 +42,7 @@ export default function PermissionList() {
             okType: 'danger',
             okText: $t('delete_btn'),
             onOk: async () => {
-                const rs = await deletePermission(id);
+                const rs = await deleteRole(id);
 
                 if (rs?.error) {
                     notification.error({
@@ -38,51 +54,50 @@ export default function PermissionList() {
                         message: rs.message,
                         showProgress: true,
                     });
-                    dispatch(changeSearchPermissionAction({ reload: Date.now() }));
+                    dispatch(changeSearchRoleAction({ reload: Date.now() }));
                 }
             },
         });
     };
 
-    const actionItems: MenuProps['items'] = [
-        {
-            label: $t('actions.edit_permission'),
-            key: 'edit_permission',
-            icon: <PencilLine size={16} />,
-        },
-        {
-            type: 'divider',
-        },
-        {
-            label: $t('actions.delete'),
-            danger: true,
-            key: 'delete_permission',
-            icon: <Trash size={16} />,
-        },
-    ];
+    const viewDetails = (id: string) => {
+        router.push(`roles/${id}/settings`);
+    };
 
     return (
         <>
             <Table dataSource={data} rowKey="id" loading={isLoading}>
-                <Table.Column<Permission> key="serviceName" title={$t('serviceName')} dataIndex="serviceName" />
-                <Table.Column<Permission> key="resource" title={$t('resource')} dataIndex="resource" />
-                <Table.Column<Permission> key="action" title={$t('action')} dataIndex="action" />
-                <Table.Column<Permission> key="attributes" title={$t('attributes')} dataIndex="attributes" />
+                <Table.Column<Permission>
+                    key="name"
+                    title={$t('name')}
+                    dataIndex="name"
+                    render={(name, record) => (
+                        <div className="cursor-pointer text-indigo-500" onClick={() => viewDetails(record.id)}>
+                            {name}
+                        </div>
+                    )}
+                />
+                <Table.Column<Permission>
+                    key="description"
+                    title={$t('description')}
+                    dataIndex="description"
+                    render={(value) => value || '-'}
+                />
                 <Table.Column<Permission>
                     key="action_btn"
                     dataIndex="id"
-                    render={(id, record) => (
+                    render={(id) => (
                         <div className="flex items-center justify-end gap-2">
                             <Dropdown
                                 menu={{
                                     items: actionItems,
                                     onClick: ({ key }) => {
                                         switch (key) {
-                                            case 'delete_permission':
+                                            case 'delete_role':
                                                 deleteAction(id);
                                                 break;
-                                            case 'edit_permission':
-                                                setPermission(record);
+                                            case 'view_role_details':
+                                                viewDetails(id);
                                                 break;
                                             default:
                                                 break;
@@ -101,7 +116,6 @@ export default function PermissionList() {
                     )}
                 ></Table.Column>
             </Table>
-            <PermissionEditor isOpen={!!permission} permission={permission} close={() => setPermission(undefined)} />
         </>
     );
 }

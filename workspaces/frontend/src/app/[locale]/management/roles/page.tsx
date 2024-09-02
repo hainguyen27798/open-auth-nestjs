@@ -1,3 +1,5 @@
+import { RoleManagement } from '@/components/pages/management/roles';
+
 export default function RolesPage() {
-    return <div>Roles Management</div>;
+    return <RoleManagement />;
 }

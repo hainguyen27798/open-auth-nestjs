@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 
+import { refreshAction } from '@/_actions/refresh-token.action';
 import { CookiesKey, defaultLocale, locales } from '@/constants';
 
 const protectedRoutes = [/.*\/management\/.*/];
@@ -16,14 +17,6 @@ const intlMiddleware = createMiddleware({
 const regex = /^\/(en|vi)(.*)?$/;
 
 export default async function middleware(request: NextRequest) {
-    await fetch('http://localhost:3000/api/session', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-    });
-
     const pathsMatch = request.nextUrl?.pathname?.match(regex);
     const path = request.nextUrl?.pathname;
     const locale = pathsMatch?.[1];
@@ -41,7 +34,15 @@ export default async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
     }
 
-    return intlMiddleware(request);
+    const res = intlMiddleware(request);
+    const newToken = await refreshAction();
+
+    if (newToken) {
+        res.cookies.set(CookiesKey.refreshToken, newToken.refreshToken);
+        res.cookies.set(CookiesKey.accessToken, newToken.accessToken);
+    }
+
+    return res;
 }
 
 export const config = {

@@ -5,7 +5,8 @@ import type { RootState } from '@/lib/store/store';
 export const permissionSlice = createSlice({
     name: 'permission',
     initialState: {
-        searchPermissionStatue: {
+        searchPermissionState: {
+            name: 'permission',
             reload: 0,
             search: '',
             by: '',
@@ -15,8 +16,8 @@ export const permissionSlice = createSlice({
         changeSearchPermissionAction: (state, action) => {
             return {
                 ...state,
-                searchPermissionStatue: {
-                    ...state.searchPermissionStatue,
+                searchPermissionState: {
+                    ...state.searchPermissionState,
                     ...action.payload,
                 },
             };
@@ -26,6 +27,4 @@ export const permissionSlice = createSlice({
 
 export const { changeSearchPermissionAction } = permissionSlice.actions;
 
-export const selectSearchPermissionState = (state: RootState) => state.permission.searchPermissionStatue;
-
-export default permissionSlice.reducer;
+export const selectSearchPermissionState = (state: RootState) => state.permission.searchPermissionState;

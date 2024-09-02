@@ -86,7 +86,7 @@ export class HttpClient {
 }
 
 export function withToken<T = unknown>(httpFunction: (args: HttpOptions) => Promise<TResponse<T>>) {
-    const accessToken = cookies().get(CookiesKey.refreshToken)?.value || '';
+    const accessToken = cookies().get(CookiesKey.accessToken)?.value || '';
     return (args: HttpOptions): Promise<TResponse<T>> => {
         return httpFunction({
             ...args,

@@ -1,4 +1,8 @@
 {
+    "auth": {
+        "login_success": "Login successfully",
+        "logout_success": "Logout successfully"
+    },
     "dashboard_filter": {
         "search_by": "Search By",
         "reset_btn": "Reset"
@@ -30,7 +34,53 @@
             "action": "Action",
             "attributes": "Attributes",
             "confirm_delete": "Are your sure delete permission?",
-            "delete_btn": "Delete"
+            "delete_btn": "Delete",
+            "actions": {
+                "edit_permission": "Edit",
+                "delete": "Delete"
+            }
+        }
+    },
+    "roles": {
+        "title": "Roles",
+        "description": "Create and manage Roles for your applications. Roles contain collections of Permissions and can be assigned to Users.",
+        "create_role": "Create Role",
+        "search_for": "Search for roles",
+        "form": {
+            "title": "Create Role",
+            "title_edit": "Edit Role",
+            "name": "Name",
+            "description": "Description",
+            "create_btn": "Create"
+        },
+        "table": {
+            "name": "Name",
+            "description": "Description",
+            "confirm_delete": "Are your sure delete role?",
+            "delete_btn": "Delete",
+            "actions": {
+                "view_details": "View Details",
+                "delete": "Delete"
+            }
+        },
+        "details": {
+            "back_btn": "Back to Roles",
+            "role_id": "Role ID",
+            "tabs": {
+                "settings": "Settings",
+                "permissions": "Permissions",
+                "users": "Users"
+            },
+            "settings": {
+                "name": "Name",
+                "description": "Description",
+                "save_btn": "Save",
+                "danger_zone": "Danger Zone",
+                "delete_role": "Delete Role",
+                "confirm_delete": "Are your sure delete role?",
+                "delete_btn": "Remove this role",
+                "confirm": "Once confirmed, this operation can't be undone!"
+            }
         }
     }
 }

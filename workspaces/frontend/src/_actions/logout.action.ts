@@ -23,12 +23,10 @@ export async function logoutAction() {
         },
     });
 
-    if (!error) {
-        cookies().delete(CookiesKey.name);
-        cookies().delete(CookiesKey.email);
-        cookies().delete(CookiesKey.refreshToken);
-        cookies().delete(CookiesKey.accessToken);
-    }
+    cookies().delete(CookiesKey.name);
+    cookies().delete(CookiesKey.email);
+    cookies().delete(CookiesKey.refreshToken);
+    cookies().delete(CookiesKey.accessToken);
 
     return {
         error,

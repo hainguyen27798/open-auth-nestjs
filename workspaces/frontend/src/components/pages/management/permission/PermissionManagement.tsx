@@ -10,7 +10,7 @@ import PermissionEditor from '@/components/pages/management/permission/Permissio
 import PermissionList from '@/components/pages/management/permission/PermissionList';
 import { DashboardFilter } from '@/components/ui';
 import { useAppDispatch } from '@/lib/store/hook';
-import { changeSearchPermissionAction } from '@/lib/store/reducers/permission.reducer';
+import { changeSearchPermissionAction } from '@/lib/store/slices';
 
 const searchByOptions: DefaultOptionType[] = [
     {
@@ -40,11 +40,7 @@ export default function PermissionManagement() {
         <>
             <div className="flex w-full items-center justify-between">
                 <div className="text-3xl font-semibold">{$t('title')}</div>
-                <Button
-                    className="!border-indigo-500 !bg-indigo-500 text-sm !text-white"
-                    icon={<PlusIcon size={18} />}
-                    onClick={() => setIsPermissionEditorOpen(true)}
-                >
+                <Button type="primary" icon={<PlusIcon size={18} />} onClick={() => setIsPermissionEditorOpen(true)}>
                     {$t('create_permission')}
                 </Button>
             </div>

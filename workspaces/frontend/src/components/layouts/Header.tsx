@@ -2,16 +2,34 @@
 
 import { UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Avatar, Divider, Dropdown } from 'antd';
+import { App, Avatar, Divider, Dropdown } from 'antd';
 import { LogOut, UserRound } from 'lucide-react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 import { logoutAction } from '@/_actions/logout.action';
-import { Link } from '@/navigation';
+import { Link, useRouter } from '@/navigation';
 
 export default function Header() {
+    const $t = useTranslations('auth');
+    const { notification } = App.useApp();
+    const router = useRouter();
+
     const onLogout = () => {
-        logoutAction().then();
+        logoutAction().then((rs) => {
+            if (rs?.error) {
+                notification.error({
+                    message: rs.message,
+                    showProgress: true,
+                });
+            } else {
+                notification.success({
+                    message: $t('logout_success'),
+                    showProgress: true,
+                });
+            }
+            router.push('/login');
+        });
     };
 
     const items: MenuProps['items'] = [
