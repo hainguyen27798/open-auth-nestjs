@@ -17,8 +17,6 @@ const intlMiddleware = createMiddleware({
 const regex = /^\/(en|vi)(.*)?$/;
 
 export default async function middleware(request: NextRequest) {
-    await refreshAction();
-
     const pathsMatch = request.nextUrl?.pathname?.match(regex);
     const path = request.nextUrl?.pathname;
     const locale = pathsMatch?.[1];
@@ -36,7 +34,15 @@ export default async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
     }
 
-    return intlMiddleware(request);
+    const res = intlMiddleware(request);
+    const newToken = await refreshAction();
+
+    if (newToken) {
+        res.cookies.set(CookiesKey.refreshToken, newToken.refreshToken);
+        res.cookies.set(CookiesKey.accessToken, newToken.accessToken);
+    }
+
+    return res;
 }
 
 export const config = {

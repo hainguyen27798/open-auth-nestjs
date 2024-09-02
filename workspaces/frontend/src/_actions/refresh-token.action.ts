@@ -9,7 +9,7 @@ import { HttpClient } from '@/utils';
 
 export async function refreshAction() {
     if (!shouldRefreshToken()) {
-        return;
+        return null;
     }
 
     const refreshToken = cookies().get(CookiesKey.refreshToken)?.value || '';
@@ -20,10 +20,7 @@ export async function refreshAction() {
         },
     });
 
-    if (!error) {
-        cookies().set(CookiesKey.refreshToken, data.refreshToken, { secure: true });
-        cookies().set(CookiesKey.accessToken, data.accessToken, { secure: true });
-    }
+    return !error ? data : null;
 }
 
 function shouldRefreshToken() {
