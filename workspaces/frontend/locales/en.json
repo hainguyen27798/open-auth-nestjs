@@ -54,7 +54,11 @@
             "name": "Name",
             "description": "Description",
             "confirm_delete": "Are your sure delete role?",
-            "delete_btn": "Delete"
+            "delete_btn": "Delete",
+            "actions": {
+                "view_details": "View Details",
+                "delete": "Delete"
+            }
         }
     }
 }

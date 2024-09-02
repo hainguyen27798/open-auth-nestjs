@@ -1,17 +1,17 @@
 'use client';
 
-import { ChevronsLeft, ShieldCheck, UserCheck2, UsersRound } from 'lucide-react';
+import { ChevronsLeft, ChevronsRight, ShieldCheck, UserCheck2, UsersRound } from 'lucide-react';
 import { useState } from 'react';
 
 import { Link } from '@/navigation';
 
 export default function Navigation() {
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
 
     const items = [
-        { key: '1', icon: <UsersRound size={20} />, route: 'users', label: 'Users' },
-        { key: '2', icon: <UserCheck2 size={20} />, route: 'roles', label: 'Roles' },
-        { key: '3', icon: <ShieldCheck size={20} />, route: 'permissions', label: 'Permissions' },
+        { key: '1', icon: <UsersRound size={20} />, route: '/management/users', label: 'Users' },
+        { key: '2', icon: <UserCheck2 size={20} />, route: '/management/roles', label: 'Roles' },
+        { key: '3', icon: <ShieldCheck size={20} />, route: '/management/permissions', label: 'Permissions' },
     ];
 
     const toggleCollapsed = () => {
@@ -43,7 +43,7 @@ export default function Navigation() {
                 className={`flex h-16 items-center ${collapsed ? 'justify-center' : 'justify-end'} border-t border-gray-300 px-4`}
                 onClick={toggleCollapsed}
             >
-                <ChevronsLeft />
+                {collapsed ? <ChevronsRight /> : <ChevronsLeft />}
             </div>
         </div>
     );

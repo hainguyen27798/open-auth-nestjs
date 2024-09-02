@@ -1,13 +1,15 @@
 'use client';
 
-import { App, Button, Table } from 'antd';
-import { PencilLine, Trash2 } from 'lucide-react';
+import type { MenuProps } from 'antd';
+import { App, Button, Dropdown, Table } from 'antd';
+import { Ellipsis, Trash } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import useSWRImmutable from 'swr/immutable';
 
 import { deleteRole, getRoles } from '@/_actions/role.action';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hook';
 import { changeSearchRoleAction, selectSearchRoleState } from '@/lib/store/slices';
+import { useRouter } from '@/navigation';
 import type { Permission } from '@/types';
 
 export default function RoleList() {
@@ -16,6 +18,23 @@ export default function RoleList() {
     const $t = useTranslations('roles.table');
     const { notification, modal } = App.useApp();
     const dispatch = useAppDispatch();
+    const router = useRouter();
+
+    const actionItems: MenuProps['items'] = [
+        {
+            label: $t('actions.view_details'),
+            key: 'view_role_details',
+        },
+        {
+            type: 'divider',
+        },
+        {
+            label: $t('actions.delete'),
+            danger: true,
+            key: 'delete_role',
+            icon: <Trash size={16} />,
+        },
+    ];
 
     const deleteAction = (id: string) => {
         modal.confirm({
@@ -41,10 +60,23 @@ export default function RoleList() {
         });
     };
 
+    const viewDetails = (id: string) => {
+        router.push(`roles/${id}`);
+    };
+
     return (
         <>
             <Table dataSource={data} rowKey="id">
-                <Table.Column<Permission> key="name" title={$t('name')} dataIndex="name" />
+                <Table.Column<Permission>
+                    key="name"
+                    title={$t('name')}
+                    dataIndex="name"
+                    render={(name, record) => (
+                        <div className="cursor-pointer text-indigo-500" onClick={() => viewDetails(record.id)}>
+                            {name}
+                        </div>
+                    )}
+                />
                 <Table.Column<Permission>
                     key="description"
                     title={$t('description')}
@@ -54,22 +86,29 @@ export default function RoleList() {
                 <Table.Column<Permission>
                     key="action_btn"
                     dataIndex="id"
-                    render={(id, record) => (
+                    render={(id) => (
                         <div className="flex items-center justify-end gap-2">
-                            <Button
-                                size="small"
-                                className="!text-indigo-500"
-                                type="text"
-                                icon={<PencilLine size={20} />}
-                                onClick={() => {}}
-                            />
-                            <Button
-                                size="small"
-                                className="!text-rose-400"
-                                type="text"
-                                icon={<Trash2 size={20} />}
-                                onClick={() => deleteAction(id)}
-                            />
+                            <Dropdown
+                                menu={{
+                                    items: actionItems,
+                                    onClick: ({ key }) => {
+                                        switch (key) {
+                                            case 'delete_role':
+                                                deleteAction(id);
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                    },
+                                }}
+                                placement="bottomRight"
+                            >
+                                <Button
+                                    size="small"
+                                    className="!border-gray-300 !text-gray-500"
+                                    icon={<Ellipsis size={16} />}
+                                />
+                            </Dropdown>
                         </div>
                     )}
                 ></Table.Column>

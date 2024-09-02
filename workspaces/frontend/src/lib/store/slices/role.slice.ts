@@ -6,6 +6,7 @@ export const roleSlice = createSlice({
     name: 'role',
     initialState: {
         searchRoleState: {
+            name: 'role',
             reload: 0,
             search: '',
             by: '',

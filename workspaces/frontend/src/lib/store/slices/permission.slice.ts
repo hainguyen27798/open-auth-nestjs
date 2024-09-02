@@ -6,6 +6,7 @@ export const permissionSlice = createSlice({
     name: 'permission',
     initialState: {
         searchPermissionState: {
+            name: 'permission',
             reload: 0,
             search: '',
             by: '',
