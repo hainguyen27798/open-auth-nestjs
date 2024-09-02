@@ -27,8 +27,8 @@ export default function Header() {
                     message: $t('logout_success'),
                     showProgress: true,
                 });
-                router.push('/login');
             }
+            router.push('/login');
         });
     };
 

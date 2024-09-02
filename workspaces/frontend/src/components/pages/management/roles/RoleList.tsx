@@ -14,7 +14,7 @@ import type { Permission } from '@/types';
 
 export default function RoleList() {
     const searchState = useAppSelector(selectSearchRoleState);
-    const { data } = useSWRImmutable(searchState, getRoles);
+    const { data, isLoading } = useSWRImmutable(searchState, getRoles, { revalidateOnMount: true });
     const $t = useTranslations('roles.table');
     const { notification, modal } = App.useApp();
     const dispatch = useAppDispatch();
@@ -66,7 +66,7 @@ export default function RoleList() {
 
     return (
         <>
-            <Table dataSource={data} rowKey="id">
+            <Table dataSource={data} rowKey="id" loading={isLoading}>
                 <Table.Column<Permission>
                     key="name"
                     title={$t('name')}
@@ -97,7 +97,7 @@ export default function RoleList() {
                                                 deleteAction(id);
                                                 break;
                                             case 'view_role_details':
-                                                viewDetails(id)
+                                                viewDetails(id);
                                                 break;
                                             default:
                                                 break;

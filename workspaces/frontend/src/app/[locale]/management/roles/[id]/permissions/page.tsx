@@ -1,3 +1,3 @@
 export default function RolePermissionPage() {
-    return <>Permission</>;
+    return <></>;
 }

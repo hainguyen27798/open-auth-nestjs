@@ -1,6 +1,5 @@
 'use server';
 
-import { get, split } from 'lodash-es';
 import { cookies } from 'next/headers';
 
 import { CookiesKey, HeaderKey } from '@/constants';
@@ -30,7 +29,7 @@ function shouldRefreshToken() {
         return false;
     }
 
-    const payloadToken = get(split(accessToken, '.'), 1);
+    const payloadToken = accessToken.split('.')?.[1];
 
     if (!payloadToken) {
         return false;

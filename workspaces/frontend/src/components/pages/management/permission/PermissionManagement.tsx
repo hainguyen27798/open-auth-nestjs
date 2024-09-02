@@ -40,11 +40,7 @@ export default function PermissionManagement() {
         <>
             <div className="flex w-full items-center justify-between">
                 <div className="text-3xl font-semibold">{$t('title')}</div>
-                <Button
-                    className="!border-indigo-500 !bg-indigo-500 text-sm !text-white"
-                    icon={<PlusIcon size={18} />}
-                    onClick={() => setIsPermissionEditorOpen(true)}
-                >
+                <Button type="primary" icon={<PlusIcon size={18} />} onClick={() => setIsPermissionEditorOpen(true)}>
                     {$t('create_permission')}
                 </Button>
             </div>

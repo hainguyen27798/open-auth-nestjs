@@ -48,7 +48,7 @@ export default function RoleDetails({ children }: React.PropsWithChildren) {
                 {isLoading ? (
                     <Skeleton.Input size="small" active={true} />
                 ) : (
-                    <div className="text-gray-500">
+                    <div className="leading-[27px] text-gray-500">
                         {$t('role_id')}: <span className="rounded-md bg-zinc-200 px-1.5 py-0.5">{data?.id}</span>
                     </div>
                 )}

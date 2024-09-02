@@ -47,8 +47,7 @@
             "title_edit": "Edit Role",
             "name": "Name",
             "description": "Description",
-            "create_btn": "Create",
-            "save_btn": "Save"
+            "create_btn": "Create"
         },
         "table": {
             "name": "Name",
