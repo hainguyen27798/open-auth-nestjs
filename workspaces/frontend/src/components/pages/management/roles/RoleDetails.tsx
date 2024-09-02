@@ -10,6 +10,8 @@ import React, { useMemo } from 'react';
 import useSWRImmutable from 'swr/immutable';
 
 import { getRole } from '@/_actions/role.action';
+import { useAppDispatch } from '@/lib/store/hook';
+import { changeCurrentRoleAction } from '@/lib/store/slices';
 import { usePathname, useRouter } from '@/navigation';
 
 export default function RoleDetails({ children }: React.PropsWithChildren) {
@@ -17,7 +19,29 @@ export default function RoleDetails({ children }: React.PropsWithChildren) {
     const router = useRouter();
     const params = useParams();
     const pathname = usePathname();
-    const { data, isLoading } = useSWRImmutable(params.id, getRole);
+    const dispatch = useAppDispatch();
+    const { data, isLoading } = useSWRImmutable(
+        params.id,
+        async (id: string) => {
+            dispatch(
+                changeCurrentRoleAction({
+                    isLoading: true,
+                }),
+            );
+
+            const rs = await getRole(id);
+            dispatch(
+                changeCurrentRoleAction({
+                    data: rs,
+                    isLoading: false,
+                }),
+            );
+            return rs;
+        },
+        {
+            revalidateOnMount: true,
+        },
+    );
 
     const path = useMemo(() => {
         return last(split(pathname, '/'));

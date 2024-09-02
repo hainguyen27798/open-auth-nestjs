@@ -70,6 +70,16 @@
                 "settings": "Settings",
                 "permissions": "Permissions",
                 "users": "Users"
+            },
+            "settings": {
+                "name": "Name",
+                "description": "Description",
+                "save_btn": "Save",
+                "danger_zone": "Danger Zone",
+                "delete_role": "Delete Role",
+                "confirm_delete": "Are your sure delete role?",
+                "delete_btn": "Remove this role",
+                "confirm": "Once confirmed, this operation can't be undone!"
             }
         }
     }
