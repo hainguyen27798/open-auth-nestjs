@@ -1,7 +1,7 @@
 'use client';
 
-import { App, Button, Table } from 'antd';
-import { PencilLine, Trash2 } from 'lucide-react';
+import { App, Button, Dropdown, type MenuProps, Table } from 'antd';
+import { Ellipsis, PencilLine, Trash } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import useSWRImmutable from 'swr/immutable';
@@ -14,7 +14,7 @@ import type { Permission } from '@/types';
 
 export default function PermissionList() {
     const searchState = useAppSelector(selectSearchPermissionState);
-    const { data } = useSWRImmutable(searchState, getPermissions);
+    const { data, isLoading } = useSWRImmutable(searchState, getPermissions);
     const $t = useTranslations('permission.table');
     const { notification, modal } = App.useApp();
     const dispatch = useAppDispatch();
@@ -44,9 +44,26 @@ export default function PermissionList() {
         });
     };
 
+    const actionItems: MenuProps['items'] = [
+        {
+            label: $t('actions.edit_permission'),
+            key: 'edit_permission',
+            icon: <PencilLine size={16} />,
+        },
+        {
+            type: 'divider',
+        },
+        {
+            label: $t('actions.delete'),
+            danger: true,
+            key: 'delete_permission',
+            icon: <Trash size={16} />,
+        },
+    ];
+
     return (
         <>
-            <Table dataSource={data} rowKey="id">
+            <Table dataSource={data} rowKey="id" loading={isLoading}>
                 <Table.Column<Permission> key="serviceName" title={$t('serviceName')} dataIndex="serviceName" />
                 <Table.Column<Permission> key="resource" title={$t('resource')} dataIndex="resource" />
                 <Table.Column<Permission> key="action" title={$t('action')} dataIndex="action" />
@@ -56,20 +73,30 @@ export default function PermissionList() {
                     dataIndex="id"
                     render={(id, record) => (
                         <div className="flex items-center justify-end gap-2">
-                            <Button
-                                size="small"
-                                className="!text-indigo-500"
-                                type="text"
-                                icon={<PencilLine size={20} />}
-                                onClick={() => setPermission(record)}
-                            />
-                            <Button
-                                size="small"
-                                className="!text-rose-400"
-                                type="text"
-                                icon={<Trash2 size={20} />}
-                                onClick={() => deleteAction(id)}
-                            />
+                            <Dropdown
+                                menu={{
+                                    items: actionItems,
+                                    onClick: ({ key }) => {
+                                        switch (key) {
+                                            case 'delete_permission':
+                                                deleteAction(id);
+                                                break;
+                                            case 'edit_permission':
+                                                setPermission(record);
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                    },
+                                }}
+                                placement="bottomRight"
+                            >
+                                <Button
+                                    size="small"
+                                    className="!border-gray-300 !text-gray-500"
+                                    icon={<Ellipsis size={16} />}
+                                />
+                            </Dropdown>
                         </div>
                     )}
                 ></Table.Column>

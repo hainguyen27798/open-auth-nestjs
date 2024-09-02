@@ -34,7 +34,11 @@
             "action": "Action",
             "attributes": "Attributes",
             "confirm_delete": "Are your sure delete permission?",
-            "delete_btn": "Delete"
+            "delete_btn": "Delete",
+            "actions": {
+                "edit_permission": "Edit",
+                "delete": "Delete"
+            }
         }
     },
     "roles": {
