@@ -5,14 +5,14 @@ import { HttpClient, withToken } from '@/utils';
 
 export async function getPermissions({ search = '', by = '' }: InputSearchDto) {
     const rs = await withToken<Permission[]>(HttpClient.get)({
-        uri: `/v1/role-permissions?search=${search}&by=${by}`,
+        uri: `/role-permissions?search=${search}&by=${by}`,
     });
     return rs.data;
 }
 
 export async function createPermission(form: CreatePermissionDto) {
     const rs = await withToken<Permission[]>(HttpClient.post)({
-        uri: '/v1/role-permissions',
+        uri: '/role-permissions',
         body: form,
     });
 
@@ -24,7 +24,7 @@ export async function createPermission(form: CreatePermissionDto) {
 
 export async function updatePermission(id: string, form: UpdatePermissionDto) {
     const rs = await withToken<Permission[]>(HttpClient.patch)({
-        uri: `/v1/role-permissions/${id}`,
+        uri: `/role-permissions/${id}`,
         body: form,
     });
 
@@ -36,7 +36,7 @@ export async function updatePermission(id: string, form: UpdatePermissionDto) {
 
 export async function deletePermission(id: string) {
     const rs = await withToken<Permission[]>(HttpClient.delete)({
-        uri: `/v1/role-permissions/${id}`,
+        uri: `/role-permissions/${id}`,
     });
 
     return {

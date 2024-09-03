@@ -16,7 +16,7 @@ export async function logoutAction() {
     }
 
     const { message, error } = await HttpClient.post({
-        uri: '/v1/auth/logout',
+        uri: '/auth/logout',
         body: null,
         headers: {
             [HeaderKey.RefreshToken]: refreshToken,
