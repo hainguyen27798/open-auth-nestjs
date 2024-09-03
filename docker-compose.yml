@@ -52,6 +52,17 @@ services:
         expose:
             - '${AUTH_API_PORT}'
         command: 'yarn start:prod'
+    nginx:
+        container_name: open-auth-host
+        image: nginx
+        ports:
+            - '80:80'
+            - '443:443'
+        volumes:
+            - ./.docker/nginx.conf:/etc/nginx/nginx.conf
+            - ./.docker/ssl:/etc/nginx/ssl  # Ensure the .docker/ssl directory is mounted
+        networks:
+            - open_auth_network
 volumes:
     open_auth_db:
     open_auth_backend:
