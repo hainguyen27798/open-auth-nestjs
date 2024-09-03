@@ -3,7 +3,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { PageOptionsDto } from '@/common';
 import { ApiDataResponse, Auth, UUIDParam } from '@/decorators';
-import { CreateRoleDto, RoleDto, UpdateRoleDto } from '@/modules/role/dto';
+import { CreateRoleDto, RoleDto, UpdateRoleDto, UpdateRolePermissionDto } from '@/modules/role/dto';
 import { RoleService } from '@/modules/role/role.service';
 
 @Controller('roles')
@@ -36,21 +36,35 @@ export class RoleController {
     @ApiDataResponse({
         type: RoleDto,
     })
-    createPermission(@Body() payload: CreateRoleDto) {
+    createRole(@Body() payload: CreateRoleDto) {
         return this._RoleService.create(payload);
     }
 
     @Patch(':id')
     @ApiOperation({ description: 'Update a role' })
     @ApiDataResponse({})
-    updatePermission(@UUIDParam() id: UUID, @Body() payload: UpdateRoleDto) {
+    updateRole(@UUIDParam() id: UUID, @Body() payload: UpdateRoleDto) {
         return this._RoleService.update(id, payload);
+    }
+
+    @Post(':id/permission')
+    @ApiOperation({ description: 'Add a permission for role' })
+    @ApiDataResponse({})
+    addPermissionForRole(@UUIDParam() id: UUID, @Body() payload: UpdateRolePermissionDto) {
+        return this._RoleService.addPermissionForRole(id, payload);
+    }
+
+    @Delete(':id/permission/:permissionId')
+    @ApiOperation({ description: 'Delete a role permission' })
+    @ApiDataResponse({})
+    deleteRolePermission(@UUIDParam() id: UUID, @UUIDParam('permissionId') permissionId: UUID) {
+        return this._RoleService.deleteRolePermission(id, permissionId);
     }
 
     @Delete(':id')
     @ApiOperation({ description: 'Delete a role' })
     @ApiDataResponse({})
-    deletePermission(@UUIDParam() id: UUID) {
+    deleteRole(@UUIDParam() id: UUID) {
         return this._RoleService.delete(id);
     }
 }

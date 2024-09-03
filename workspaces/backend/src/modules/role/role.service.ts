@@ -1,11 +1,10 @@
-import { BadRequestException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, FindOptionsWhere, Like, Repository } from 'typeorm';
 
 import { PageOptionsDto, SuccessDto } from '@/common';
 import { SUPERUSER } from '@/constants';
-import { CreateRoleDto, UpdateRoleDto } from '@/modules/role/dto';
-import { Permission } from '@/modules/role/entities/permission.entity';
+import { CreateRoleDto, UpdateRoleDto, UpdateRolePermissionDto } from '@/modules/role/dto';
 import { Role } from '@/modules/role/entities/role.entity';
 import { PermissionService } from '@/modules/role/permission.service';
 
@@ -82,32 +81,23 @@ export class RoleService {
 
     async create(payload: CreateRoleDto) {
         const roleExisting = await this._RoleRepository.findOneBy({ name: payload.name });
-        let permissions: Permission[];
 
         if (roleExisting) {
             throw new BadRequestException('role_is_exist');
         }
 
-        if (payload.permissionIds) {
-            permissions = await this._PermissionService.checkPermissionIdsExists(payload.permissionIds);
-        }
-
         const newRole = await this._RoleRepository.save(
             this._RoleRepository.create({
                 name: payload.name,
-                permissions: permissions,
+                permissions: [],
                 description: payload.description,
             }),
-            {
-                transaction: true,
-            },
         );
 
         return new SuccessDto('create_role_success', HttpStatus.CREATED, newRole.toDto());
     }
 
     async update(id: UUID, payload: UpdateRoleDto) {
-        let permissions: Permission[];
         const role = await this._RoleRepository.findOneBy({
             id,
         });
@@ -116,22 +106,67 @@ export class RoleService {
             throw new NotFoundException('role_not_found');
         }
 
-        if (payload.permissionIds) {
-            permissions = await this._PermissionService.checkPermissionIdsExists(payload.permissionIds);
+        await this._RoleRepository.save({
+            id,
+            ...payload,
+        });
+
+        return new SuccessDto('update_role_success');
+    }
+
+    async addPermissionForRole(id: UUID, payload: UpdateRolePermissionDto) {
+        const role = await this._RoleRepository.findOne({
+            where: { id },
+            relations: {
+                permissions: true,
+            },
+        });
+
+        if (!role) {
+            throw new NotFoundException('role_not_found');
         }
+
+        if (role.permissions.some((permission) => permission.id === payload.permissionId)) {
+            throw new ConflictException('role_permission_exists');
+        }
+
+        const permission = await this._PermissionService.checkPermissionIdsExists(payload.permissionId);
 
         await this._RoleRepository.save(
             {
                 id,
-                permissions: permissions,
-                description: payload.description,
+                permissions: [...role.permissions, permission],
             },
             {
                 transaction: true,
             },
         );
 
-        return new SuccessDto('update_role_success');
+        return new SuccessDto('add_permission_for_role_success');
+    }
+
+    async deleteRolePermission(id: UUID, permissionId: UUID) {
+        const role = await this._RoleRepository.findOne({
+            where: { id, permissions: { id: permissionId } },
+            relations: {
+                permissions: true,
+            },
+        });
+
+        if (!role) {
+            throw new NotFoundException('role_or_permission_not_found');
+        }
+
+        const permissions = role.permissions.filter((permission) => permission.id !== permissionId);
+
+        await this._RoleRepository.save(
+            { id, permissions },
+            {
+                transaction: true,
+            },
+        );
+
+        return new SuccessDto('delete_role_permission_success');
     }
 
     async delete(id: UUID) {

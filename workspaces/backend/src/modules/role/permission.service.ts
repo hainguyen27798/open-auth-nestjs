@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
+import { FindOptionsWhere, Like, Repository } from 'typeorm';
 
 import { PageOptionsDto, SuccessDto } from '@/common';
 import { GRANT_ALL_SERVICE, GRANT_ANY, GRANT_ANY_ATTRIBUTES, GRANT_OPERATION } from '@/modules/role/constants/grant';
@@ -74,13 +74,11 @@ export class PermissionService {
         return new SuccessDto('delete_permission_success');
     }
 
-    async checkPermissionIdsExists(permissionIds: UUID[]) {
-        const [permission, total] = await this._PermissionRepository.findAndCountBy({
-            id: In(permissionIds),
-        });
+    async checkPermissionIdsExists(id: UUID) {
+        const permission = await this._PermissionRepository.findOneBy({ id });
 
-        if (total !== permissionIds.length) {
-            throw new NotFoundException('some_permissions_not_found');
+        if (!permission) {
+            throw new NotFoundException('permission_not_found');
         }
 
         return permission;
