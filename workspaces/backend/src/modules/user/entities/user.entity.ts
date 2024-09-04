@@ -41,4 +41,7 @@ export class User extends AbstractEntity<UserDto> {
     @ManyToOne(() => Role)
     @JoinColumn({ name: 'role_id' })
     role: Role;
+
+    @Column({ name: 'can_modify', type: 'boolean', default: true })
+    canModify: boolean;
 }

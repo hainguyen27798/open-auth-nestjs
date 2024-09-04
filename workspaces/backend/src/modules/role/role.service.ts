@@ -19,7 +19,7 @@ export class RoleService {
         const role = await this._RoleRepository.findOneBy({ name: SUPERUSER });
 
         if (!role) {
-            const permission = this._PermissionService.createSuperRole();
+            const permission = this._PermissionService.createSuperPermission();
 
             await entityManager.save(permission);
 
@@ -27,6 +27,7 @@ export class RoleService {
                 this._RoleRepository.create({
                     name: SUPERUSER,
                     permissions: [permission],
+                    canModify: false,
                 }),
             );
         }
@@ -106,6 +107,10 @@ export class RoleService {
             throw new NotFoundException('role_not_found');
         }
 
+        if (!role.canModify) {
+            throw new BadRequestException('can_not_modify');
+        }
+
         await this._RoleRepository.save({
             id,
             ...payload,
@@ -124,6 +129,10 @@ export class RoleService {
 
         if (!role) {
             throw new NotFoundException('role_not_found');
+        }
+
+        if (!role.canModify) {
+            throw new BadRequestException('can_not_modify');
         }
 
         if (role.permissions.some((permission) => permission.id === payload.permissionId)) {
@@ -157,6 +166,10 @@ export class RoleService {
             throw new NotFoundException('role_or_permission_not_found');
         }
 
+        if (!role.canModify) {
+            throw new BadRequestException('can_not_delete_role_permission');
+        }
+
         const permissions = role.permissions.filter((permission) => permission.id !== permissionId);
 
         await this._RoleRepository.save(
@@ -172,10 +185,11 @@ export class RoleService {
     async delete(id: UUID) {
         const res = await this._RoleRepository.delete({
             id,
+            canModify: true,
         });
 
         if (!res.affected) {
-            throw new NotFoundException('role_not_found');
+            throw new BadRequestException('role_not_found_or_can_not_delete');
         }
 
         return new SuccessDto('delete_role_success');

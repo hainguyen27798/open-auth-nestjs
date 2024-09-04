@@ -61,6 +61,7 @@ export class UserService {
                         roleId: superRole.id,
                         verify: true,
                         status: UserStatus.ACTIVE,
+                        canModify: false,
                     }),
                 );
             });
