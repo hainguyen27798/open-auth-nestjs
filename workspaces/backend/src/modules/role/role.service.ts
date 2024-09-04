@@ -156,7 +156,7 @@ export class RoleService {
 
     async deleteRolePermission(id: UUID, permissionId: UUID) {
         const role = await this._RoleRepository.findOne({
-            where: { id, permissions: { id: permissionId } },
+            where: { id },
             relations: {
                 permissions: true,
             },
