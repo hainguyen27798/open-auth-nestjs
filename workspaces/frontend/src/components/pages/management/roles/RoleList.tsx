@@ -10,7 +10,7 @@ import { deleteRole, getRoles } from '@/_actions/role.action';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hook';
 import { changeSearchRoleAction, selectSearchRoleState } from '@/lib/store/slices';
 import { useRouter } from '@/navigation';
-import type { Permission } from '@/types';
+import type { Role } from '@/types';
 
 export default function RoleList() {
     const searchState = useAppSelector(selectSearchRoleState);
@@ -67,7 +67,7 @@ export default function RoleList() {
     return (
         <>
             <Table dataSource={data} rowKey="id" loading={isLoading}>
-                <Table.Column<Permission>
+                <Table.Column<Role>
                     key="name"
                     title={$t('name')}
                     dataIndex="name"
@@ -77,13 +77,13 @@ export default function RoleList() {
                         </div>
                     )}
                 />
-                <Table.Column<Permission>
+                <Table.Column<Role>
                     key="description"
                     title={$t('description')}
                     dataIndex="description"
                     render={(value) => value || '-'}
                 />
-                <Table.Column<Permission>
+                <Table.Column<Role>
                     key="action_btn"
                     dataIndex="id"
                     render={(id) => (

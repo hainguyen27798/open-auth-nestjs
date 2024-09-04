@@ -51,3 +51,26 @@ export async function deleteRole(id: string) {
         message: rs.message,
     };
 }
+
+export async function addPermissionForRole(id: string, permissionId: string) {
+    const rs = await withToken(HttpClient.post)({
+        uri: `/roles/${id}/permission`,
+        body: { permissionId },
+    });
+
+    return {
+        error: rs.error,
+        message: rs.message,
+    };
+}
+
+export async function deleteRolePermission(id: string, permissionId: string) {
+    const rs = await withToken(HttpClient.delete)({
+        uri: `/roles/${id}/permission/${permissionId}`,
+    });
+
+    return {
+        error: rs.error,
+        message: rs.message,
+    };
+}
