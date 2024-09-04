@@ -1,5 +1,6 @@
-export type Permission = {
-    id: string;
+import type { DefaultModel } from '@/types/default-model';
+
+export type Permission = DefaultModel & {
     serviceName: string;
     resource: string;
     action: string;
@@ -7,5 +8,8 @@ export type Permission = {
     description?: string;
 };
 
-export type CreatePermissionDto = Omit<Permission, 'id'>;
-export type UpdatePermissionDto = Omit<Permission, 'id' | 'serviceName' | 'resource'>;
+export type CreatePermissionDto = Pick<
+    Permission,
+    'resource' | 'action' | 'attributes' | 'description' | 'serviceName'
+>;
+export type UpdatePermissionDto = Omit<CreatePermissionDto, 'serviceName' | 'resource'>;
