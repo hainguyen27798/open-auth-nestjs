@@ -23,4 +23,7 @@ export class Permission extends AbstractEntity<PermissionDto> {
 
     @Column({ type: 'text', nullable: true })
     description: string;
+
+    @Column({ name: 'can_modify', type: 'boolean', default: true })
+    canModify: boolean;
 }

@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Like, Repository } from 'typeorm';
 
@@ -11,12 +11,13 @@ import { Permission } from '@/modules/role/entities/permission.entity';
 export class PermissionService {
     constructor(@InjectRepository(Permission) private readonly _PermissionRepository: Repository<Permission>) {}
 
-    createSuperRole() {
+    createSuperPermission() {
         return this._PermissionRepository.create({
             serviceName: GRANT_ALL_SERVICE,
             resource: GRANT_ANY,
             action: `${GRANT_OPERATION.ANY}:${GRANT_ANY}`,
             attributes: GRANT_ANY_ATTRIBUTES,
+            canModify: false,
         });
     }
 
@@ -55,20 +56,32 @@ export class PermissionService {
     }
 
     async update(id: UUID, payload: UpdatePermissionDto) {
+        const permission = await this._PermissionRepository.findOneBy({ id });
+
+        if (!permission) {
+            throw new NotFoundException('permission_not_found');
+        }
+
+        if (!permission.canModify) {
+            throw new BadRequestException('can_not_modify');
+        }
+
         await this._PermissionRepository.save({
             id,
             ...payload,
         });
+
         return new SuccessDto('update_permission_success');
     }
 
     async delete(id: UUID) {
         const res = await this._PermissionRepository.delete({
             id,
+            canModify: true,
         });
 
         if (!res.affected) {
-            throw new NotFoundException('permission_not_found');
+            throw new BadRequestException('permission_not_found_or_can_not_delete');
         }
 
         return new SuccessDto('delete_permission_success');

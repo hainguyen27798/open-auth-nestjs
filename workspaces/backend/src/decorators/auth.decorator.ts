@@ -30,7 +30,7 @@ class JwtGuard extends AuthGuard('jwt') {
         const hasPermission = find(user.permissions, (permission) => matchWithPermission(routePermission, permission));
 
         if (!hasPermission) {
-            throw new ForbiddenException(snakeCase(_info.message));
+            throw new ForbiddenException(snakeCase(_info?.message) || '');
         }
 
         return user;

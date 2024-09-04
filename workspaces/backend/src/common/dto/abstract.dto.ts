@@ -9,6 +9,10 @@ export class AbstractDto {
     id!: UUID;
 
     @Expose()
+    @ApiProperty({ type: Boolean })
+    canModify!: boolean;
+
+    @Expose()
     @ApiProperty({ type: Date })
     createdAt!: Date;
 
