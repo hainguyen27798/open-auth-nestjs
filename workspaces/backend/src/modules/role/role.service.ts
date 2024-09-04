@@ -107,14 +107,14 @@ export class RoleService {
             throw new NotFoundException('role_not_found');
         }
 
-        if (!role.canModify) {
+        if (!role.canModify && role.name !== payload.name) {
             throw new BadRequestException('can_not_modify');
         }
 
-        await this._RoleRepository.save({
-            id,
-            ...payload,
-        });
+        role.name = payload.name;
+        role.description = payload.description;
+
+        await this._RoleRepository.save(role);
 
         return new SuccessDto('update_role_success');
     }
