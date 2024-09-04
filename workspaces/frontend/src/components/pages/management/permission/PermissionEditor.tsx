@@ -39,7 +39,7 @@ export default function PermissionEditor({ isOpen = false, close, permission }: 
     }, [permission?.id]);
 
     const renderHeader = () => (
-        <div className="flex items-center justify-between text-2xl">
+        <div className="flex items-center justify-between text-xl">
             {isEdit ? $t('title_edit') : $t('title')}
             <X onClick={onClose} className="cursor-pointer" />
         </div>

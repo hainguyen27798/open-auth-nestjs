@@ -96,6 +96,11 @@
                     "confirm_delete": "Are you sure you want to remove this permission from the role?",
                     "delete_btn": "Remove"
                 }
+            },
+            "add_role_permission_model": {
+                "title": "Add a permission for role",
+                "title_select": "Select a existing permission",
+                "add_btn": "Add permission"
             }
         }
     }
