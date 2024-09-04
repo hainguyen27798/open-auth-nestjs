@@ -8,10 +8,18 @@ type SelectorProps = {
     options?: DefaultOptionType[];
     prefixNode?: React.ReactNode;
     value?: string;
+    placeholder?: string;
     onSelect?: (value: string) => void;
 };
 
-export default function Selector({ options = [], defaultValue, prefixNode = '', value, onSelect }: SelectorProps) {
+export default function Selector({
+    options = [],
+    defaultValue,
+    prefixNode = '',
+    value,
+    onSelect,
+    placeholder = 'Select...',
+}: SelectorProps) {
     const [valueSelected, setValueSelected] = useState<string | undefined>(value);
 
     const onSelectValue = useCallback(
@@ -43,6 +51,7 @@ export default function Selector({ options = [], defaultValue, prefixNode = '', 
             value={valueSelected}
             onSelect={onSelectValue}
             suffixIcon={<ChevronDown size={22} className="text-gray-500" />}
+            placeholder={placeholder}
         />
     );
 }

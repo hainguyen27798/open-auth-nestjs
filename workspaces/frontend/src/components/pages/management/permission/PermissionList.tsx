@@ -61,6 +61,31 @@ export default function PermissionList() {
         },
     ];
 
+    const renderActionButton = (id: string, record: Permission) => {
+        return (
+            <Dropdown
+                menu={{
+                    items: actionItems,
+                    onClick: ({ key }) => {
+                        switch (key) {
+                            case 'delete_permission':
+                                deleteAction(id);
+                                break;
+                            case 'edit_permission':
+                                setPermission(record);
+                                break;
+                            default:
+                                break;
+                        }
+                    },
+                }}
+                placement="bottomRight"
+            >
+                <Button size="small" className="!border-gray-300 !text-gray-500" icon={<Ellipsis size={16} />} />
+            </Dropdown>
+        );
+    };
+
     return (
         <>
             <Table dataSource={data} rowKey="id" loading={isLoading}>
@@ -73,30 +98,7 @@ export default function PermissionList() {
                     dataIndex="id"
                     render={(id, record) => (
                         <div className="flex items-center justify-end gap-2">
-                            <Dropdown
-                                menu={{
-                                    items: actionItems,
-                                    onClick: ({ key }) => {
-                                        switch (key) {
-                                            case 'delete_permission':
-                                                deleteAction(id);
-                                                break;
-                                            case 'edit_permission':
-                                                setPermission(record);
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                    },
-                                }}
-                                placement="bottomRight"
-                            >
-                                <Button
-                                    size="small"
-                                    className="!border-gray-300 !text-gray-500"
-                                    icon={<Ellipsis size={16} />}
-                                />
-                            </Dropdown>
+                            {record.canModify && renderActionButton(id, record)}
                         </div>
                     )}
                 ></Table.Column>

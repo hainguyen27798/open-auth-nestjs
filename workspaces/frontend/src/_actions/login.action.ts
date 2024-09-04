@@ -8,7 +8,7 @@ import { HttpClient } from '@/utils';
 
 export async function loginAction(email: string, password: string) {
     const { message, data, error } = await HttpClient.post<Token>({
-        uri: '/v1/auth/login',
+        uri: '/auth/login',
         body: {
             email,
             password,

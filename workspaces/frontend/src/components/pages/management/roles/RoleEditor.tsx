@@ -34,7 +34,7 @@ export default function RoleEditor({ isOpen = false, close }: RoleEditorProps) {
     }, [isOpen]);
 
     const renderHeader = () => (
-        <div className="flex items-center justify-between text-2xl">
+        <div className="flex items-center justify-between text-xl">
             {$t('title')}
             <X onClick={onClose} className="cursor-pointer" />
         </div>

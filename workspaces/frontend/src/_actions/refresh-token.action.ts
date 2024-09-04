@@ -13,7 +13,7 @@ export async function refreshAction() {
 
     const refreshToken = cookies().get(CookiesKey.refreshToken)?.value || '';
     const { data, error } = await HttpClient.post<Token>({
-        uri: '/v1/auth/refresh-token',
+        uri: '/auth/refresh-token',
         headers: {
             [HeaderKey.RefreshToken]: refreshToken,
         },

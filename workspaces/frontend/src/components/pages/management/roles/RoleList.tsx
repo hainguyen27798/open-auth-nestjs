@@ -10,7 +10,7 @@ import { deleteRole, getRoles } from '@/_actions/role.action';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hook';
 import { changeSearchRoleAction, selectSearchRoleState } from '@/lib/store/slices';
 import { useRouter } from '@/navigation';
-import type { Permission } from '@/types';
+import type { Role } from '@/types';
 
 export default function RoleList() {
     const searchState = useAppSelector(selectSearchRoleState);
@@ -64,10 +64,35 @@ export default function RoleList() {
         router.push(`roles/${id}/settings`);
     };
 
+    const renderActionButton = (id: string, record: Role) => {
+        return (
+            <Dropdown
+                menu={{
+                    items: record.canModify ? actionItems : [actionItems[0]],
+                    onClick: ({ key }) => {
+                        switch (key) {
+                            case 'delete_role':
+                                deleteAction(id);
+                                break;
+                            case 'view_role_details':
+                                viewDetails(id);
+                                break;
+                            default:
+                                break;
+                        }
+                    },
+                }}
+                placement="bottomRight"
+            >
+                <Button size="small" className="!border-gray-300 !text-gray-500" icon={<Ellipsis size={16} />} />
+            </Dropdown>
+        );
+    };
+
     return (
         <>
             <Table dataSource={data} rowKey="id" loading={isLoading}>
-                <Table.Column<Permission>
+                <Table.Column<Role>
                     key="name"
                     title={$t('name')}
                     dataIndex="name"
@@ -77,42 +102,17 @@ export default function RoleList() {
                         </div>
                     )}
                 />
-                <Table.Column<Permission>
+                <Table.Column<Role>
                     key="description"
                     title={$t('description')}
                     dataIndex="description"
                     render={(value) => value || '-'}
                 />
-                <Table.Column<Permission>
+                <Table.Column<Role>
                     key="action_btn"
                     dataIndex="id"
-                    render={(id) => (
-                        <div className="flex items-center justify-end gap-2">
-                            <Dropdown
-                                menu={{
-                                    items: actionItems,
-                                    onClick: ({ key }) => {
-                                        switch (key) {
-                                            case 'delete_role':
-                                                deleteAction(id);
-                                                break;
-                                            case 'view_role_details':
-                                                viewDetails(id);
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                    },
-                                }}
-                                placement="bottomRight"
-                            >
-                                <Button
-                                    size="small"
-                                    className="!border-gray-300 !text-gray-500"
-                                    icon={<Ellipsis size={16} />}
-                                />
-                            </Dropdown>
-                        </div>
+                    render={(id, record) => (
+                        <div className="flex items-center justify-end gap-2">{renderActionButton(id, record)}</div>
                     )}
                 ></Table.Column>
             </Table>

@@ -1,11 +1,11 @@
+import type { DefaultModel } from '@/types/default-model';
 import type { Permission } from '@/types/permission';
 
-export type Role = {
-    id: string;
+export type Role = DefaultModel & {
     name: string;
     description?: string;
     permissions?: Permission[];
 };
 
-export type CreateRoleDto = Omit<Role, 'id' | 'permissions'>;
-export type UpdateRoleDto = Omit<Role, 'id' | 'permissions'>;
+export type CreateRoleDto = Pick<Role, 'name' | 'description'>;
+export type UpdateRoleDto = CreateRoleDto;
