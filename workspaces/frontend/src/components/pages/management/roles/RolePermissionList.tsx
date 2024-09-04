@@ -66,6 +66,31 @@ export default function RolePermissionList() {
         router.push(`../../permissions/${id}`);
     };
 
+    const renderActionButton = (id: string) => {
+        return (
+            <Dropdown
+                menu={{
+                    items: actionItems,
+                    onClick: ({ key }) => {
+                        switch (key) {
+                            case 'delete_role_permission':
+                                onDeleteRolePermission(id);
+                                break;
+                            case 'view_permission_details':
+                                viewPermissionDetails(id);
+                                break;
+                            default:
+                                break;
+                        }
+                    },
+                }}
+                placement="bottomRight"
+            >
+                <Button size="small" className="!border-gray-300 !text-gray-500" icon={<Ellipsis size={16} />} />
+            </Dropdown>
+        );
+    };
+
     return (
         <Table dataSource={role.data?.permissions} rowKey="id" loading={role.isLoading}>
             <Table.Column<Permission> key="serviceName" title={$t('serviceName')} dataIndex="serviceName" />
@@ -78,30 +103,7 @@ export default function RolePermissionList() {
                 dataIndex="id"
                 render={(id) => (
                     <div className="flex items-center justify-end gap-2">
-                        <Dropdown
-                            menu={{
-                                items: actionItems,
-                                onClick: ({ key }) => {
-                                    switch (key) {
-                                        case 'delete_role_permission':
-                                            onDeleteRolePermission(id);
-                                            break;
-                                        case 'view_permission_details':
-                                            viewPermissionDetails(id);
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                },
-                            }}
-                            placement="bottomRight"
-                        >
-                            <Button
-                                size="small"
-                                className="!border-gray-300 !text-gray-500"
-                                icon={<Ellipsis size={16} />}
-                            />
-                        </Dropdown>
+                        {role.data?.canModify && renderActionButton(id)}
                     </div>
                 )}
             ></Table.Column>

@@ -71,6 +71,7 @@ export default function RoleSettingDetails() {
                         defaultValue={role.data?.name}
                         name="name"
                         label={$t('name')}
+                        disable={!role.data?.canModify}
                         rules={[{ required: true }]}
                     />
                     <FormField<UpdateRoleDto>
@@ -84,18 +85,20 @@ export default function RoleSettingDetails() {
                     </Button>
                 </Form>
             </div>
-            <div className="flex flex-col gap-4 pt-10">
-                <div className="text-2xl font-medium">{$t('danger_zone')}</div>
-                <div className="flex items-center justify-between gap-4 rounded bg-red-100 p-6 py-4">
-                    <div className="flex flex-col gap-1.5">
-                        <div className="text-base font-medium text-red-900">{$t('delete_role')}</div>
-                        <div className=" text-red-900">{$t('confirm')}</div>
+            {role.data?.canModify && (
+                <div className="flex flex-col gap-4 pt-10">
+                    <div className="text-2xl font-medium">{$t('danger_zone')}</div>
+                    <div className="flex items-center justify-between gap-4 rounded bg-red-100 p-6 py-4">
+                        <div className="flex flex-col gap-1.5">
+                            <div className="text-base font-medium text-red-900">{$t('delete_role')}</div>
+                            <div className=" text-red-900">{$t('confirm')}</div>
+                        </div>
+                        <Button type="primary" className="px-6" danger onClick={onDelete}>
+                            {$t('delete_btn')}
+                        </Button>
                     </div>
-                    <Button type="primary" className="px-6" danger onClick={onDelete}>
-                        {$t('delete_btn')}
-                    </Button>
                 </div>
-            </div>
+            )}
         </LoadingWrapper>
     );
 }

@@ -83,13 +83,14 @@
             },
             "permissions": {
                 "description": "Add Permissions to this Role. Users with this Role will be granted all Permissions associated with the specified resources, actions, and attributes in the APIs from the external services you select.",
+                "description_view_only": "Users with this Role will be granted all Permissions associated with the specified resources, actions, and attributes in the APIs from the external services you select.",
                 "add_permissions": "Add Permissions",
                 "table": {
                     "serviceName": "Service Name",
                     "resource": "Resource",
                     "action": "Action",
                     "attributes": "Attributes",
-                    "description": "Attributes",
+                    "description": "Description",
                     "view_permission_details": "View permission details",
                     "delete_role_permission": "Delete",
                     "confirm_delete": "Are you sure you want to remove this permission from the role?",
