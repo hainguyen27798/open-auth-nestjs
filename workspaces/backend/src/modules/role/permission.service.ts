@@ -56,10 +56,21 @@ export class PermissionService {
     }
 
     async update(id: UUID, payload: UpdatePermissionDto) {
+        const permission = await this._PermissionRepository.findOneBy({ id });
+
+        if (!permission) {
+            throw new NotFoundException('permission_not_found');
+        }
+
+        if (!permission.canModify) {
+            throw new BadRequestException('can_not_modify');
+        }
+
         await this._PermissionRepository.save({
             id,
             ...payload,
         });
+
         return new SuccessDto('update_permission_success');
     }
 
