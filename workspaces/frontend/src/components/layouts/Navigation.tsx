@@ -3,10 +3,11 @@
 import { ChevronsLeft, ChevronsRight, ShieldCheck, UserCheck2, UsersRound } from 'lucide-react';
 import { useState } from 'react';
 
-import { Link } from '@/navigation';
+import { Link, usePathname } from '@/navigation';
 
 export default function Navigation() {
     const [collapsed, setCollapsed] = useState(true);
+    const pathname = usePathname();
 
     const items = [
         { key: '1', icon: <UsersRound size={20} />, route: '/management/users', label: 'Users' },
@@ -28,7 +29,7 @@ export default function Navigation() {
                     <Link
                         href={item.route}
                         key={item.key}
-                        className="flex h-8 min-w-16 cursor-pointer items-center gap-2 px-[22px] text-default hover:text-indigo-500"
+                        className={`flex h-8 min-w-16 cursor-pointer items-center gap-2 px-[22px] ${pathname?.startsWith(item.route) ? 'text-indigo-500' : 'text-default'} hover:text-indigo-500`}
                     >
                         <div className="flex justify-center">{item.icon}</div>
                         <div
